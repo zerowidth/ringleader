@@ -60,10 +60,10 @@ class SocketProxy
   end
 end
 
-ProxyServer.new "localhost", 10000, 10001
+# ProxyServer.new "localhost", 10000, 10001
 
-trap("INT") do
-  exit
-end
+# trap("INT") do
+#   exit
+# end
 
-sleep
+# sleep
