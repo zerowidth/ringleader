@@ -1,3 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'ringleader'
+
+app = Ringleader::App.new("bundle exec foreman start -d dev_scripts -f dev_scripts/Procfile", "localhost", 10001)
+server = Ringleader::AppProxy.new "localhost", 10000, 10001, app
+sleep
