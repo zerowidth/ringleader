@@ -1,5 +1,13 @@
 require "ringleader/version"
 
+require "celluloid"
+require "celluloid/io"
+
 module Ringleader
-  # Your code goes here...
 end
+
+require "ringleader/wait_for_exit"
+require "ringleader/wait_for_port"
+require "ringleader/socket_proxy"
+require "ringleader/app"
+require "ringleader/app_proxy"
