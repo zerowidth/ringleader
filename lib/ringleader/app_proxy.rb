@@ -9,10 +9,11 @@ module Ringleader
 
     # Create a new AppProxy instance
     #
+    # app    - the application to proxy to
     # config - a configuration object for this app
-    def initialize(config)
+    def initialize(app, config)
       @config = config
-      @app = App.new config
+      @app = app
       @server = TCPServer.new config.hostname, config.server_port
       run!
     end
@@ -23,7 +24,7 @@ module Ringleader
 
     def run
       start_activity_timer if config.idle_timeout > 0
-      debug "server listening for connections for #{config.name} on port #{config.server_port}"
+      info "server listening for connections for #{config.name} on port #{config.server_port}"
       loop { handle_connection! @server.accept }
     end
 
@@ -48,7 +49,7 @@ module Ringleader
     def start_activity_timer
       @activity_timer = every config.idle_timeout do
         if @app.running?
-          debug "#{config.name} is idle, shutting it down"
+          info "#{config.name} is idle, shutting it down"
           @app.stop
         end
       end

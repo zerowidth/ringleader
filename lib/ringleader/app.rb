@@ -69,7 +69,8 @@ module Ringleader
 
     # Internal: callback for when the process has exited.
     def exited
-      info "process #{@pid} has gone away"
+      debug "pid #{@pid} for #{config.name} has exited"
+      info "#{config.name} exited."
       signal :running, false
       @running = false
       @pid = nil
@@ -87,7 +88,11 @@ module Ringleader
       @starting = true
       info "starting process: #{config.command}"
       reader, writer = ::IO.pipe
-      @pid = Process.spawn config.command, :out => writer, :err => writer, :pgroup => true
+      @pid = Process.spawn "bash -c '#{escape config.command}'",
+        :out => writer,
+        :err => writer,
+        :pgroup => true,
+        :chdir => config.dir
       proxy_output reader
       debug "started with pid #{@pid}"
 
@@ -115,6 +120,10 @@ module Ringleader
           info "#{@pid} | " + input.gets.strip
         end
       end
+    end
+
+    def escape(command)
+      command.split("'").join("'\\''")
     end
   end
 

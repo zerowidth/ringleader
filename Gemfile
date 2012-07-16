@@ -2,6 +2,7 @@ source :rubygems
 
 gem "celluloid"
 gem "celluloid-io"
+gem "trollop"
 
 group :development do
   gem "foreman", :git => "https://github.com/ddollar/foreman.git"
