@@ -1,0 +1,8 @@
+---
+test:
+  dir: "./dev_scripts"
+  # command: "ncat -k -l 10001"
+  command: "bundle exec foreman start"
+  server_port: 10000
+  port: 10001
+  idle_timeout: 10
