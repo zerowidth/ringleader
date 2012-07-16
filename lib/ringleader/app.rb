@@ -43,7 +43,7 @@ module Ringleader
     # Sends a SIGHUP to the app's process, and expects it to exit like a sane
     # and well-behaved application within 30 seconds before sending a SIGTERM.
     def stop
-      return unless @running
+      return unless @pid
 
       info "stopping #{config.name}"
       Process.kill "SIGHUP", -@pid
@@ -51,7 +51,7 @@ module Ringleader
       timer = after 30 do
         if @running
           warn "process #{@pid} did not shut down cleanly, killing it"
-          Process.kill "SIGTERM", @pid
+          Process.kill "SIGTERM", -@pid
         end
       end
 
@@ -72,6 +72,7 @@ module Ringleader
       info "process #{@pid} has gone away"
       signal :running, false
       @running = false
+      @pid = nil
       @wait_for_port.terminate if @wait_for_port.alive?
       @wait_for_exit.terminate if @wait_for_exit.alive?
     end
@@ -86,7 +87,7 @@ module Ringleader
       @starting = true
       info "starting process: #{config.command}"
       reader, writer = ::IO.pipe
-      @pid = Process.spawn @cmd, :out => writer, :err => writer
+      @pid = Process.spawn config.command, :out => writer, :err => writer, :pgroup => true
       proxy_output reader
       debug "started with pid #{@pid}"
 

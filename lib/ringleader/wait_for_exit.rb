@@ -8,7 +8,7 @@ module Ringleader
     end
 
     def wait
-      Process.wait @pid
+      Process.waitpid @pid
       @app.exited!
       terminate
     end
