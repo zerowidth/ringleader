@@ -22,7 +22,7 @@ module Ringleader
     end
 
     def run
-      start_activity_timer
+      start_activity_timer if config.idle_timeout > 0
       debug "server listening for connections for #{config.name} on port #{config.server_port}"
       loop { handle_connection! @server.accept }
     end
@@ -34,7 +34,7 @@ module Ringleader
       started = @app.start
       if started
         proxy_to_app! socket
-        @activity_timer.reset
+        @activity_timer.reset if @activity_timer
       else
         error "could not start app"
         socket.close
