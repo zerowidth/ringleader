@@ -24,7 +24,7 @@ module Ringleader
 
     def run
       start_activity_timer if config.idle_timeout > 0
-      info "server listening for connections for #{config.name} on port #{config.server_port}"
+      info "server listening for connections for #{config.name} on #{config.hostname}:#{config.server_port}"
       loop { handle_connection! @server.accept }
     end
 
@@ -49,7 +49,7 @@ module Ringleader
     def start_activity_timer
       @activity_timer = every config.idle_timeout do
         if @app.running?
-          info "#{config.name} is idle, shutting it down"
+          info "#{config.name} has been idle for #{config.idle_timeout} seconds, shutting it down"
           @app.stop
         end
       end

@@ -70,7 +70,7 @@ module Ringleader
 
     # Internal: callback for when the application port has opened
     def port_opened
-      info "process #{@pid} has started"
+      info "#{config.name} listening on #{config.hostname}:#{config.port}"
       signal :running, true
     end
 
@@ -106,7 +106,7 @@ module Ringleader
       @wait_for_exit = WaitForExit.new @pid, Actor.current
       @wait_for_port = WaitForPort.new config.hostname, config.port, Actor.current
 
-      timer = after(10) { warn "application startup took too long"; stop! }
+      timer = after(30) { warn "application startup took too long"; stop! }
 
       @running = wait :running
       @starting = false
@@ -124,7 +124,7 @@ module Ringleader
     def proxy_output(input)
       Thread.new do
         until input.eof?
-          info "#{@pid} | " + input.gets.strip
+          info "#{config.name} | " + input.gets.strip
         end
       end
     end
