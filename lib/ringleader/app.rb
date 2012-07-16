@@ -13,6 +13,8 @@ module Ringleader
     def initialize(config)
       @config = config
       @starting = @running = false
+      @restart_file = File.expand_path(config.dir + "/tmp/restart.txt")
+      @restart_file = nil unless File.exist?(@restart_file)
     end
 
     # Public: query if the app is running
@@ -29,6 +31,11 @@ module Ringleader
     #
     # Returns true if the app started, false if not.
     def start
+      if restart?
+        info "tmp/restart.txt modified, restarting #{config.name}..."
+        stop
+      end
+
       if @running
         true
       elsif @starting
@@ -71,11 +78,11 @@ module Ringleader
     def exited
       debug "pid #{@pid} for #{config.name} has exited"
       info "#{config.name} exited."
-      signal :running, false
       @running = false
       @pid = nil
       @wait_for_port.terminate if @wait_for_port.alive?
       @wait_for_exit.terminate if @wait_for_exit.alive?
+      signal :running, false
     end
 
     # Private: start the application process and associated infrastructure
@@ -88,7 +95,7 @@ module Ringleader
       @starting = true
       info "starting process: #{config.command}"
       reader, writer = ::IO.pipe
-      @pid = Process.spawn "bash -c '#{escape config.command}'",
+      @pid = Process.spawn "bash -c '#{config.command}'",
         :out => writer,
         :err => writer,
         :pgroup => true,
@@ -122,9 +129,18 @@ module Ringleader
       end
     end
 
-    def escape(command)
-      command.split("'").join("'\\''")
+    # Check the mtime of the tmp/restart.txt file. If modified, restart the app.
+    def restart?
+      @mtime ||= 0
+      if @restart_file
+        new_mtime = File.mtime(@restart_file).to_i
+        if new_mtime > @mtime
+          @mtime = new_mtime
+          true
+        end
+      end
     end
+
   end
 
 end
