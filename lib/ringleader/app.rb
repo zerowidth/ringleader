@@ -5,15 +5,13 @@ module Ringleader
     include Celluloid
     include Celluloid::Logger
 
+    attr_reader :config
+
     # Create a new App instance.
     #
-    # cmd  - the command to run
-    # host - the host the app is running on
-    # port - the port the app is expected to listen on
-    def initialize(cmd, host, port)
-      @cmd = cmd
-      @host = host
-      @port = port
+    # config - a configuration object for this app
+    def initialize(config)
+      @config = config
       @starting = @running = false
     end
 
@@ -47,8 +45,8 @@ module Ringleader
     def stop
       return unless @running
 
-      debug "stopping #{@cmd}"
-      Process.kill "SIGHUP", @pid
+      info "stopping #{config.name}"
+      Process.kill "SIGHUP", -@pid
 
       timer = after 30 do
         if @running
@@ -86,14 +84,14 @@ module Ringleader
     # Returns true if the app started, false if not.
     def start_app
       @starting = true
-      debug "starting process: #{@cmd}"
+      info "starting process: #{config.command}"
       reader, writer = ::IO.pipe
       @pid = Process.spawn @cmd, :out => writer, :err => writer
       proxy_output reader
       debug "started with pid #{@pid}"
 
       @wait_for_exit = WaitForExit.new @pid, Actor.current
-      @wait_for_port = WaitForPort.new @host, @port, Actor.current
+      @wait_for_port = WaitForPort.new config.hostname, config.port, Actor.current
 
       timer = after(10) { warn "application startup took too long"; stop! }
 
@@ -103,7 +101,7 @@ module Ringleader
 
       @running
     rescue Errno::ENOENT
-      debug "could not start process: #{@cmd}"
+      debug "could not start process: #{config.command}"
       false
     end
 

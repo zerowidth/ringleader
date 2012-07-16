@@ -12,7 +12,19 @@ describe Ringleader::Config do
 
       it "returns a hash of configurations" do
         config = subject.apps["main_site"]
-        expect(config.dir).to_not eq(nil)
+        expect(config.dir).to eq("~/apps/main")
+      end
+
+      it "includes a default hostname" do
+        expect(subject.apps["admin"].hostname).to eq("127.0.0.1")
+      end
+
+      it "includes a default idle timeout" do
+        expect(subject.apps["admin"].idle_timeout).to eq(0)
+      end
+
+      it "sets the config name to match the key in the config file" do
+        expect(subject.apps["admin"].name).to eq("admin")
       end
     end
   end
