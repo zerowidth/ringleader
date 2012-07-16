@@ -14,4 +14,11 @@ Gem::Specification.new do |gem|
   gem.name          = "ringleader"
   gem.require_paths = ["lib"]
   gem.version       = Ringleader::VERSION
+
+  gem.add_dependency "celluloid", "~> 0.11.0"
+  gem.add_dependency "celluloid-io", "~> 0.11.0"
+  gem.add_dependency "trollop", "~> 1.16.2"
+
+  gem.add_development_dependency "rspec", "~> 2.11.0"
+  gem.add_development_dependency "guard-rspec"
 end
