@@ -3,6 +3,7 @@ module Ringleader
     include Celluloid::Logger
 
     def run(argv)
+      # hide "shutdown" info message until after opts are validated
       Celluloid.logger.level = ::Logger::ERROR
 
       opts = nil
@@ -13,20 +14,32 @@ module Ringleader
       die "must provide a filename" if argv.empty?
       die "could not find config file #{argv.first}" unless File.exist?(argv.first)
 
-      puts opts.inspect
+      configure_logging(opts.verbose ? "debug" : "info")
 
-      set_log_level(opts.verbose ? "debug" : "info")
-
-      config = Config.new argv.first
-      start_app_server config
+      configs = Config.new(argv.first).apps.values
+      colorized = assign_colors configs
+      start_app_server colorized
     end
 
-    def set_log_level(level)
+    def configure_logging(level)
       Celluloid.logger.level = ::Logger.const_get(level.upcase)
+      format = "%5s %s.%06d | %s\n"
+      date_format = "%H:%M:%S"
+      Celluloid.logger.formatter = lambda do |severity, time, progname, msg|
+        format % [severity, time.strftime(date_format), time.usec, msg]
+      end
     end
 
-    def start_app_server(config)
-      apps = config.apps.map do |name, app_config|
+    def assign_colors(configs)
+      offset = 360/configs.size
+      configs.map.with_index do |config, i|
+        config.color = Color::HSL.new(offset * i, 100, 50).html
+        config
+      end
+    end
+
+    def start_app_server(app_configs)
+      apps = app_configs.map do |app_config|
         app = App.new app_config
         AppProxy.new app, app_config
         app

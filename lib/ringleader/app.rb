@@ -4,6 +4,7 @@ module Ringleader
   class App
     include Celluloid
     include Celluloid::Logger
+    include NameLogger
 
     attr_reader :config
 
@@ -70,14 +71,14 @@ module Ringleader
 
     # Internal: callback for when the application port has opened
     def port_opened
-      info "#{config.name} listening on #{config.hostname}:#{config.port}"
+      info "listening on #{config.hostname}:#{config.port}"
       signal :running, true
     end
 
     # Internal: callback for when the process has exited.
     def exited
-      debug "pid #{@pid} for #{config.name} has exited"
-      info "#{config.name} exited."
+      debug "pid #{@pid} has exited"
+      info "exited."
       @running = false
       @pid = nil
       @wait_for_port.terminate if @wait_for_port.alive?
@@ -93,11 +94,11 @@ module Ringleader
     # Returns true if the app started, false if not.
     def start_app
       @starting = true
-      info "starting process: #{config.command}"
       reader, writer = ::IO.pipe
       @pid = Process.spawn "bash -c '#{config.command}'",
         :out => writer,
         :err => writer,
+      info "starting process `#{config.command}`"
         :pgroup => true,
         :chdir => config.dir
       proxy_output reader
@@ -114,7 +115,7 @@ module Ringleader
 
       @running
     rescue Errno::ENOENT
-      debug "could not start process: #{config.command}"
+      debug "could not start process `#{config.command}`"
       false
     end
 
@@ -124,7 +125,7 @@ module Ringleader
     def proxy_output(input)
       Thread.new do
         until input.eof?
-          info "#{config.name} | " + input.gets.strip
+          info input.gets.strip
         end
       end
     end

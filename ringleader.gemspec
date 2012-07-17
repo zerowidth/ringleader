@@ -18,6 +18,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency "celluloid", "~> 0.11.0"
   gem.add_dependency "celluloid-io", "~> 0.11.0"
   gem.add_dependency "trollop", "~> 1.16.2"
+  gem.add_dependency "rainbow", "~> 1.1.4"
+  gem.add_dependency "color", "~> 1.4.1"
 
   gem.add_development_dependency "rspec", "~> 2.11.0"
   gem.add_development_dependency "guard-rspec"

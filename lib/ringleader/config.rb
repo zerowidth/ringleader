@@ -10,15 +10,18 @@ module Ringleader
     end
 
     def apps
-      configs = @config.map do |name, options|
-        options["name"] = name
-        options["hostname"] ||= DEFAULT_HOSTNAME
-        options["idle_timeout"] ||= DEFAULT_IDLE_TIMEOUT
-        validate name, options
-        [name, OpenStruct.new(options)]
-      end
+      unless @app
+        configs = @config.map do |name, options|
+          options["name"] = name
+          options["hostname"] ||= DEFAULT_HOSTNAME
+          options["idle_timeout"] ||= DEFAULT_IDLE_TIMEOUT
+          validate name, options
+          [name, OpenStruct.new(options)]
+        end
 
-      Hash[*configs.flatten]
+        @apps = Hash[*configs.flatten]
+      end
+      @apps
     end
 
     # Private: validate that the options have all of the required keys
