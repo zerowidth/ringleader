@@ -16,6 +16,8 @@ module Ringleader
       @app = app
       @server = TCPServer.new config.hostname, config.server_port
       run!
+    rescue Errno::EADDRINUSE
+      error "could not bind to #{config.hostname}:#{config.server_port} for #{config.name}!"
     end
 
     def finalize
