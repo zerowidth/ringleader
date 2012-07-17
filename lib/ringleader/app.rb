@@ -94,14 +94,22 @@ module Ringleader
     # Returns true if the app started, false if not.
     def start_app
       @starting = true
-      reader, writer = ::IO.pipe
-      @pid = Process.spawn "bash -c '#{config.command}'",
-        :out => writer,
-        :err => writer,
       info "starting process `#{config.command}`"
+
+      # need a pipe for input, even if we don't use it
+      stdin, stdout = ::IO.pipe
+      # give the child process a terminal
+      master, slave = PTY.open
+      @pid = Process.spawn %Q(bash -c "#{config.command}"),
+        :in => stdin,
+        :out => slave,
+        :err => slave,
         :pgroup => true,
         :chdir => config.dir
-      proxy_output reader
+      stdin.close
+      stdout.close
+      slave.close
+      proxy_output master
       debug "started with pid #{@pid}"
 
       @wait_for_exit = WaitForExit.new @pid, Actor.current
