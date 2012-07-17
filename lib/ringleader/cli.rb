@@ -2,6 +2,8 @@ module Ringleader
   class CLI
     include Celluloid::Logger
 
+    TERMINAL_COLORS = [:red, :green, :yellow, :blue, :magenta, :cyan]
+
     def run(argv)
       # hide "shutdown" info message until after opts are validated
       Celluloid.logger.level = ::Logger::ERROR
@@ -17,7 +19,7 @@ module Ringleader
       configure_logging(opts.verbose ? "debug" : "info")
 
       configs = Config.new(argv.first).apps.values
-      colorized = assign_colors configs
+      colorized = assign_colors configs, opts.boring
       start_app_server colorized
     end
 
@@ -30,11 +32,18 @@ module Ringleader
       end
     end
 
-    def assign_colors(configs)
-      offset = 360/configs.size
-      configs.map.with_index do |config, i|
-        config.color = Color::HSL.new(offset * i, 100, 50).html
-        config
+    def assign_colors(configs, boring=false)
+      if boring
+        configs.map.with_index do |config, i|
+          config.color = TERMINAL_COLORS[ i % TERMINAL_COLORS.length ]
+          config
+        end
+      else
+        offset = 360/configs.size
+        configs.map.with_index do |config, i|
+          config.color = Color::HSL.new(offset * i, 100, 50).html
+          config
+        end
       end
     end
 
@@ -119,6 +128,7 @@ OPTIONS
         banner
 
         opt "verbose", "log at debug level", :long => "--verbose", :short => "-v", :type => :boolean
+        opt "boring", "use boring colors instead of a fabulous rainbow", :long => "--boring", :short => "-b", :type => :boolean, :default => false
 
       end
     end
