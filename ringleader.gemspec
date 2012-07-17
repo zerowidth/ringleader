@@ -4,9 +4,9 @@ require File.expand_path('../lib/ringleader/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Nathan Witmer"]
   gem.email         = ["nwitmer@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{TCP application host and proxy server}
+  gem.summary       = %q{Proxy TCP connections to an on-demand pool of configured applications}
+  gem.homepage      = "https://github.com/aniero/ringleader"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
