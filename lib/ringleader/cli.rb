@@ -54,6 +54,7 @@ module Ringleader
         app
       end
 
+      # gracefully die instead of showing an interrupted sleep below
       trap("INT") do
         info "shutting down..."
         apps.each { |app| app.stop! }

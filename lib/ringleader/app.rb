@@ -54,6 +54,7 @@ module Ringleader
       return unless @pid
 
       info "stopping `#{config.command}`"
+      @master.close unless @master.closed?
       Process.kill "SIGHUP", -@pid
 
       timer = after 30 do
@@ -96,20 +97,16 @@ module Ringleader
       @starting = true
       info "starting process `#{config.command}`"
 
-      # need a pipe for input, even if we don't use it
-      stdin, stdout = ::IO.pipe
-      # give the child process a terminal
-      master, slave = PTY.open
+      # give the child process a terminal so output isn't buffered
+      @master, slave = PTY.open
       @pid = Process.spawn %Q(bash -c "#{config.command}"),
-        :in => stdin,
+        :in => slave,
         :out => slave,
         :err => slave,
-        :pgroup => true,
-        :chdir => config.dir
-      stdin.close
-      stdout.close
+        :chdir => config.dir,
+        :pgroup => true
       slave.close
-      proxy_output master
+      proxy_output @master
       debug "started with pid #{@pid}"
 
       @wait_for_exit = WaitForExit.new @pid, Actor.current
