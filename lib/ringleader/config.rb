@@ -1,7 +1,8 @@
 module Ringleader
   class Config
 
-    DEFAULT_IDLE_TIMEOUT = 0
+    DEFAULT_IDLE_TIMEOUT = 1800
+    DEFAULT_STARTUP_TIMEOUT = 30
     DEFAULT_HOSTNAME = "127.0.0.1"
     REQUIRED_KEYS = %w(dir command server_port port idle_timeout)
 
@@ -15,6 +16,7 @@ module Ringleader
           options["name"] = name
           options["hostname"] ||= DEFAULT_HOSTNAME
           options["idle_timeout"] ||= DEFAULT_IDLE_TIMEOUT
+          options["startup_timeout"] ||= DEFAULT_STARTUP_TIMEOUT
           validate name, options
           [name, OpenStruct.new(options)]
         end

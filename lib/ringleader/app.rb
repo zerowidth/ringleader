@@ -112,7 +112,10 @@ module Ringleader
       @wait_for_exit = WaitForExit.new @pid, Actor.current
       @wait_for_port = WaitForPort.new config.hostname, config.port, Actor.current
 
-      timer = after(30) { warn "application startup took too long"; stop! }
+      timer = after config.startup_timeout do
+        warn "application startup took more than #{config.startup_timeout}"
+        stop!
+      end
 
       @running = wait :running
       @starting = false

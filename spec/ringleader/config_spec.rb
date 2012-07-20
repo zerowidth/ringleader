@@ -20,7 +20,11 @@ describe Ringleader::Config do
       end
 
       it "includes a default idle timeout" do
-        expect(subject.apps["admin"].idle_timeout).to eq(0)
+        expect(subject.apps["admin"].idle_timeout).to eq(Ringleader::Config::DEFAULT_IDLE_TIMEOUT)
+      end
+
+      it "sets a default start timeout" do
+        expect(subject.apps["admin"].startup_timeout).to eq(Ringleader::Config::DEFAULT_STARTUP_TIMEOUT)
       end
 
       it "sets the config name to match the key in the config file" do

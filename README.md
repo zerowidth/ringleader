@@ -62,8 +62,10 @@ main_app:
   server_port: 3000
   # the port the application listens on
   port: 4000
-  # idle timeout in seconds, defaults to 0. 0 means "never".
+  # idle timeout in seconds
   idle_timeout: 6000
+  # application startup timeout
+  startup_timeout: 180
 other_app:
   [...]
 ```
