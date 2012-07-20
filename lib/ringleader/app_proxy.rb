@@ -45,7 +45,7 @@ module Ringleader
     end
 
     def proxy_to_app(socket)
-      SocketProxy.new socket, config.hostname, config.port
+      SocketProxy.new socket, config.hostname, config.app_port
     end
 
     def start_activity_timer

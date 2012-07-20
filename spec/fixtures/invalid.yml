@@ -2,4 +2,4 @@
 main_site:
   dir: "~/apps/main"
   server_port: 3000
-  port: 4000
+  app_port: 4000

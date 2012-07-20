@@ -72,7 +72,7 @@ module Ringleader
 
     # Internal: callback for when the application port has opened
     def port_opened
-      info "listening on #{config.hostname}:#{config.port}"
+      info "listening on #{config.hostname}:#{config.app_port}"
       signal :running, true
     end
 
@@ -110,7 +110,7 @@ module Ringleader
       debug "started with pid #{@pid}"
 
       @wait_for_exit = WaitForExit.new @pid, Actor.current
-      @wait_for_port = WaitForPort.new config.hostname, config.port, Actor.current
+      @wait_for_port = WaitForPort.new config.hostname, config.app_port, Actor.current
 
       timer = after config.startup_timeout do
         warn "application startup took more than #{config.startup_timeout}"

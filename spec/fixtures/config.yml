@@ -4,15 +4,15 @@ main_site:
   command: "bundle exec foreman start"
   hostname: "0.0.0.0"
   server_port: 3000
-  port: 4000
+  app_port: 4000
   idle_timeout: 1800
 admin:
   dir: "~/apps/admin"
   command: "bundle exec foreman start"
   server_port: 3001
-  port: 4001
+  app_port: 4001
 authentication:
   dir: "~/apps/auth"
   command: "bundle exec foreman start"
   server_port: 3002
-  port: 4002
+  app_port: 4002

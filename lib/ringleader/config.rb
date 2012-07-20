@@ -4,7 +4,7 @@ module Ringleader
     DEFAULT_IDLE_TIMEOUT = 1800
     DEFAULT_STARTUP_TIMEOUT = 30
     DEFAULT_HOSTNAME = "127.0.0.1"
-    REQUIRED_KEYS = %w(dir command server_port port idle_timeout)
+    REQUIRED_KEYS = %w(dir command server_port app_port idle_timeout)
 
     def initialize(file)
       @config = YAML.load(File.read(file))

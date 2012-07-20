@@ -61,7 +61,7 @@ main_app:
   # the port ringleader listens on
   server_port: 3000
   # the port the application listens on
-  port: 4000
+  app_port: 4000
   # idle timeout in seconds
   idle_timeout: 6000
   # application startup timeout
