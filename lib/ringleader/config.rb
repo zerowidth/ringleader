@@ -11,7 +11,7 @@ module Ringleader
     end
 
     def apps
-      unless @app
+      unless @apps
         configs = @config.map do |name, options|
           options["name"] = name
           options["hostname"] ||= DEFAULT_HOSTNAME
