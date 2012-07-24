@@ -1,0 +1,5 @@
+---
+main_site:
+  dir: "~/apps/main"
+  command: "bundle exec foreman start"
+  server_port: 3000

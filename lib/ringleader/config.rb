@@ -4,7 +4,7 @@ module Ringleader
     DEFAULT_IDLE_TIMEOUT = 1800
     DEFAULT_STARTUP_TIMEOUT = 30
     DEFAULT_HOSTNAME = "127.0.0.1"
-    REQUIRED_KEYS = %w(dir command server_port app_port idle_timeout)
+    REQUIRED_KEYS = %w(dir command)
 
     def initialize(file)
       @config = YAML.load(File.read(file))
@@ -32,6 +32,10 @@ module Ringleader
         unless options.has_key?(key)
           raise "#{key} missing in #{name} config" 
         end
+      end
+      if (options.has_key?("app_port") && !options.has_key?("server_port")) ||
+        (!options.has_key?("app_port") && options.has_key?("server_port"))
+        raise "must provide both app_port and server_port or neither for #{name} config"
       end
     end
   end

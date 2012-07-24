@@ -50,7 +50,11 @@ module Ringleader
     def start_app_server(app_configs)
       apps = app_configs.map do |app_config|
         app = App.new app_config
-        AppProxy.new app, app_config
+        if app.persistent?
+          app.start!
+        else
+          AppProxy.new app, app_config
+        end
         app
       end
 

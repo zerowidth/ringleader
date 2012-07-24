@@ -2,7 +2,12 @@
 test:
   dir: "./dev_scripts"
   # command: "ncat -k -l 10001"
-  command: "bundle exec foreman start"
+  # command: "bundle exec foreman start"
+  command: sleep 10
   server_port: 10000
-  port: 10001
+  app_port: 10001
   idle_timeout: 10
+  startup_timeout: 5
+persistent:
+  dir: "./dev_scripts"
+  command: "echo 'good night' && sleep 10"

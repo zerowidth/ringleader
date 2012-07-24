@@ -41,4 +41,29 @@ describe Ringleader::Config do
     end
   end
 
+  context "with a config without an app port" do
+    it "raises an exception" do
+      expect {
+        Ringleader::Config.new("spec/fixtures/no_app_port.yml").apps
+      }.to raise_error(/app_port/)
+    end
+  end
+
+  context "with a config without a server port" do
+    it "raises an exception" do
+      expect {
+        Ringleader::Config.new("spec/fixtures/no_server_port.yml").apps
+      }.to raise_error(/server_port/)
+    end
+  end
+
+  context "with a persistent app config" do
+    it "does not raise an error" do
+      expect {
+        Ringleader::Config.new("spec/fixtures/persistent.yml").apps
+      }.to_not raise_error
+    end
+  end
+
+
 end
