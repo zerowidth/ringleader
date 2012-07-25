@@ -52,24 +52,27 @@ module Ringleader
 
     # Public: stop the application.
     #
-    # Sends a SIGHUP to the app's process, and expects it to exit like a sane
-    # and well-behaved application within 30 seconds before sending a SIGTERM.
+    # Sends a SIGTERM to the app's process, and expects it to exit like a sane
+    # and well-behaved application within 30 seconds before sending a SIGKILL.
     def stop
       return unless @pid
 
-      info "stopping `#{config.command}`"
+      info "stopping #{@pid}"
       @master.close unless @master.closed?
-      Process.kill "SIGHUP", -@pid
+      debug "kill -TERM #{@pid}"
+      Process.kill "TERM", -@pid
 
-      timer = after 30 do
+      kill = after 30 do
         if @running
           warn "process #{@pid} did not shut down cleanly, killing it"
-          Process.kill "SIGTERM", -@pid
+          debug "kill -KILL #{@pid}"
+          Process.kill "KILL", -@pid
         end
       end
 
       wait :running # wait for the exit callback
-      timer.cancel
+      kill.cancel
+
     rescue Errno::ESRCH, Errno::EPERM
       exited
     end
