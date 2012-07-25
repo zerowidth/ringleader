@@ -48,8 +48,9 @@ module Ringleader
       filename = ASSET_PATH + path
       if filename.exist?
         debug "GET #{path}: 200"
+        mime_type = content_type_for filename.extname
         filename.open("r") do |file|
-          connection.respond :ok, file
+          connection.respond :ok, {"Content-type" => mime_type}, file
         end
       else
         debug "GET #{path}: 404"
@@ -58,6 +59,19 @@ module Ringleader
     end
 
     def update_app(uri, body, connection)
+    end
+
+    def content_type_for(extname)
+      case extname
+      when ".html"
+        "text/html"
+      when ".js"
+        "application/json"
+      when ".css"
+        "text/css"
+      else
+        "text/plain"
+      end
     end
 
   end
