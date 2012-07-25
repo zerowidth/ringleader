@@ -15,22 +15,49 @@ module Ringleader
       route connection, request if request
     end
 
+    # thanks to dcell explorer for this code
     def route(connection, request)
-      static_file request.url, connection
+      if request.url == "/"
+        path = "index.html"
+      else
+        path = request.url[%r{^/([a-z0-9\.\-_]+(/[a-z0-9\.\-_]+)*)$}, 1]
+      end
+
+      if !path or path[".."]
+        connection.respond :not_found, "Not found"
+        return
+      end
+
+      case request.method
+      when :get
+        if path == "/apps.json"
+          app_index connection
+        else
+          static_file path, connection
+        end
+      when :put
+        update_app path, request.body, connection
+      end
     end
 
-    def static_file(uri, connection)
-      uri = "/index.html" if uri == "/"
-      filename = ASSET_PATH + File.basename(uri)
+    def app_index(connection)
+      connection.respond :ok, "{}"
+    end
+
+    def static_file(path, connection)
+      filename = ASSET_PATH + path
       if filename.exist?
-        debug "GET #{uri}: 200"
+        debug "GET #{path}: 200"
         filename.open("r") do |file|
           connection.respond :ok, file
         end
       else
-        debug "GET #{uri}: 404"
+        debug "GET #{path}: 404"
         connection.respond :not_found, "Not found"
       end
+    end
+
+    def update_app(uri, body, connection)
     end
 
   end

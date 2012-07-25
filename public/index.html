@@ -1,10 +1,90 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <title>Ringleader</title>
-</head>
-<body>
-  <h1>hello world</h1>
-</body>
+  <head>
+
+
+    <title>Ringleader</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ringleader control panel">
+    <meta name="author" content="Nathan Witmer">
+
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- <link rel="shortcut icon" href="../assets/ico/favicon.ico"> -->
+    <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png"> -->
+    <!-- <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png"> -->
+    <!-- <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png"> -->
+    <!-- <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png"> -->
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Ringleader Controls</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <table class="table table-striped">
+        <tr>
+          <td><strong>main_site</strong></td>
+          <td><span class="label label-success">RUNNING</span></td>
+          <td>
+            <button class="btn btn-small btn-inverse">
+              <i class="icon-off icon-white">&nbsp;</i>
+              Stop
+            </button>
+            <button class="btn btn-small btn-info">
+              <i class="icon-refresh icon-white">&nbsp;</i>
+              Restart
+            </button>
+          </td>
+        </tr>
+
+        <tr>
+          <td><strong>admin_app</strong></td>
+          <td><span class="label label-inverse">STOPPED</span></td>
+          <td>
+            <button class="btn btn-small btn-success">
+              <i class="icon-off icon-white">&nbsp;</i>
+              Start
+            </button>
+            <button class="btn btn-small btn-danger">
+              <i class="icon-remove icon-white">&nbsp;</i>
+              Disable
+            </button>
+          </td>
+        </tr>
+
+        <tr>
+          <td><strong>resque_workers</strong></td>
+          <td><span class="label">DISABLED</span></td>
+          <td>
+            <button class="btn btn-small">
+              <i class="icon-ok">&nbsp;</i>
+              Enable
+            </button>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <script src="/jquery-1.7.2.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/app.js"></script>
+  </body>
 </html>
