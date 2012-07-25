@@ -30,6 +30,47 @@
   </head>
   <body>
 
+    <script type="text/x-mustache-tmpl" id="app-template">
+      <tr id="app-{{ name }}">
+      <td><strong>{{ name }}</strong></td>
+        {{#running?}}
+        <td><span class="label label-success">RUNNING</span></td>
+        <td>
+          <button class="stop btn btn-small btn-inverse">
+            <i class="icon-stop icon-white">&nbsp;</i>
+            Stop
+          </button>
+          <button class="restart btn btn-small btn-info">
+            <i class="icon-refresh icon-white">&nbsp;</i>
+            Restart
+          </button>
+        </td>
+        {{/running?}}
+        {{#stopped?}}
+          <td><span class="label label-inverse">STOPPED</span></td>
+          <td>
+            <button class="start btn btn-small btn-success">
+              <i class="icon-play icon-white">&nbsp;</i>
+              Start
+            </button>
+            <button class="disable btn btn-small btn-danger">
+              <i class="icon-remove icon-white">&nbsp;</i>
+              Disable
+            </button>
+          </td>
+        {{/stopped?}}
+        {{#disabled?}}
+          <td><span class="label">DISABLED</span></td>
+          <td>
+            <button class="enable btn btn-small">
+              <i class="icon-ok">&nbsp;</i>
+              Enable
+            </button>
+          </td>
+        {{/disabled?}}
+      </tr>
+    </script>
+
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -39,51 +80,13 @@
     </div>
 
     <div class="container">
-      <table class="table table-striped">
-        <tr>
-          <td><strong>main_site</strong></td>
-          <td><span class="label label-success">RUNNING</span></td>
-          <td>
-            <button class="btn btn-small btn-inverse">
-              <i class="icon-off icon-white">&nbsp;</i>
-              Stop
-            </button>
-            <button class="btn btn-small btn-info">
-              <i class="icon-refresh icon-white">&nbsp;</i>
-              Restart
-            </button>
-          </td>
-        </tr>
-
-        <tr>
-          <td><strong>admin_app</strong></td>
-          <td><span class="label label-inverse">STOPPED</span></td>
-          <td>
-            <button class="btn btn-small btn-success">
-              <i class="icon-off icon-white">&nbsp;</i>
-              Start
-            </button>
-            <button class="btn btn-small btn-danger">
-              <i class="icon-remove icon-white">&nbsp;</i>
-              Disable
-            </button>
-          </td>
-        </tr>
-
-        <tr>
-          <td><strong>resque_workers</strong></td>
-          <td><span class="label">DISABLED</span></td>
-          <td>
-            <button class="btn btn-small">
-              <i class="icon-ok">&nbsp;</i>
-              Enable
-            </button>
-          </td>
-        </tr>
+      <table id="apps" class="table table-striped">
       </table>
     </div>
 
     <script src="/jquery-1.7.2.min.js"></script>
+    <script src="/jquery.mustache.js"></script>
+    <script src="/underscore-min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script src="/app.js"></script>
   </body>
