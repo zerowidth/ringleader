@@ -2,8 +2,8 @@
 test:
   dir: "./dev_scripts"
   # command: "ncat -k -l 10001"
-  # command: "bundle exec foreman start"
-  command: sleep 10
+  command: "bundle exec foreman start 2>&1 | tee fail.log"
+  # command: sleep 10
   server_port: 10000
   app_port: 10001
   idle_timeout: 10
