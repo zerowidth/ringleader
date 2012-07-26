@@ -18,10 +18,6 @@ module Ringleader
       @mtime = File.exist?(@restart_file) ? File.mtime(@restart_file).to_i : 0
     end
 
-    def persistent?
-      !@config.app_port
-    end
-
     # Public: query if the app is running
     def running?
       @running
@@ -89,7 +85,7 @@ module Ringleader
       info "exited."
       @running = false
       @pid = nil
-      @wait_for_port.terminate if @wait_for_port && @wait_for_port.alive?
+      @wait_for_port.terminate if @wait_for_port.alive?
       @wait_for_exit.terminate if @wait_for_exit.alive?
       signal :running, false
     end
@@ -117,21 +113,16 @@ module Ringleader
       debug "started with pid #{@pid}"
 
       @wait_for_exit = WaitForExit.new @pid, Actor.current
+      @wait_for_port = WaitForPort.new config.hostname, config.app_port, Actor.current
 
-      if persistent?
-        @running = true
-      else
-        @wait_for_port = WaitForPort.new config.hostname, config.app_port, Actor.current
-
-        timer = after config.startup_timeout do
-          warn "application startup took more than #{config.startup_timeout}"
-          stop!
-        end
-
-        @running = wait :running
-        @starting = false
-        timer.cancel
+      timer = after config.startup_timeout do
+        warn "application startup took more than #{config.startup_timeout}"
+        stop!
       end
+
+      @running = wait :running
+      @starting = false
+      timer.cancel
 
       @running
     rescue Errno::ENOENT

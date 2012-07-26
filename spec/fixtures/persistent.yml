@@ -1,4 +1,0 @@
----
-persistent_app:
-  dir: "~/apps/main"
-  command: "bundle exec foreman start"

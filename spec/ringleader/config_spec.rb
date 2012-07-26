@@ -57,13 +57,4 @@ describe Ringleader::Config do
     end
   end
 
-  context "with a persistent app config" do
-    it "does not raise an error" do
-      expect {
-        Ringleader::Config.new("spec/fixtures/persistent.yml").apps
-      }.to_not raise_error
-    end
-  end
-
-
 end
