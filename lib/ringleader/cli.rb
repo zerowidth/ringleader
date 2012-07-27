@@ -18,9 +18,9 @@ module Ringleader
 
       configure_logging(opts.verbose ? "debug" : "info")
 
-      configs = Config.new(argv.first).apps.values
-      colorized = assign_colors configs, opts.boring
-      start_app_server colorized
+      configs = Config.new(argv.first).apps
+      assign_colors configs, opts.boring
+      start_app_server configs
     end
 
     def configure_logging(level)
@@ -34,13 +34,13 @@ module Ringleader
 
     def assign_colors(configs, boring=false)
       if boring
-        configs.map.with_index do |config, i|
+        configs.values.each.with_index do |config, i|
           config.color = TERMINAL_COLORS[ i % TERMINAL_COLORS.length ]
           config
         end
       else
         offset = 360/configs.size
-        configs.map.with_index do |config, i|
+        configs.values.each.with_index do |config, i|
           config.color = Color::HSL.new(offset * i, 100, 50).html
           config
         end
@@ -48,20 +48,11 @@ module Ringleader
     end
 
     def start_app_server(app_configs)
-      apps = app_configs.map do |app_config|
-        app = App.new app_config
-        if app.persistent?
-          app.start!
-        else
-          AppProxy.new app, app_config
-        end
-        app
-      end
+      controller = Controller.new(app_configs)
 
       # gracefully die instead of showing an interrupted sleep below
       trap("INT") do
-        info "shutting down..."
-        apps.each { |app| app.stop! }
+        controller.stop
         exit
       end
 
@@ -70,7 +61,7 @@ module Ringleader
 
     def die(msg)
       error msg
-      exit -1
+      exit(-1)
     end
 
     def parser
