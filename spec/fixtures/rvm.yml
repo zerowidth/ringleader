@@ -1,0 +1,6 @@
+---
+rvm_app:
+  dir: "~/apps/main"
+  rvm: "foreman start"
+  server_port: 3000
+  app_port: 4000

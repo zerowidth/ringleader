@@ -37,6 +37,11 @@ module Ringleader
         options["hostname"] ||= DEFAULT_HOSTNAME
         options["idle_timeout"] ||= DEFAULT_IDLE_TIMEOUT
         options["startup_timeout"] ||= DEFAULT_STARTUP_TIMEOUT
+
+        if command = options.delete("rvm")
+          options["command"] = "source ~/.rvm/scripts/rvm && rvm --with-rubies rvmrc exec -- #{command}"
+        end
+
         validate name, options
         [name, OpenStruct.new(options)]
       end
