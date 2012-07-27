@@ -6,24 +6,40 @@ module Ringleader
     DEFAULT_HOSTNAME = "127.0.0.1"
     REQUIRED_KEYS = %w(dir command app_port server_port)
 
-    def initialize(file)
-      @config = YAML.load(File.read(file))
+    TERMINAL_COLORS = [:red, :green, :yellow, :blue, :magenta, :cyan]
+
+    attr_reader :apps
+
+    # Public: Load the configs from a file
+    #
+    # file   - the yml file to load the config from
+    # boring - use terminal colors instead of a rainbow for app colors
+    def initialize(file, boring=false)
+      config_data = YAML.load(File.read(file))
+      configs = convert_and_validate config_data, boring
+      @apps = Hash[*configs.flatten]
     end
 
-    def apps
-      unless @apps
-        configs = @config.map do |name, options|
-          options["name"] = name
-          options["hostname"] ||= DEFAULT_HOSTNAME
-          options["idle_timeout"] ||= DEFAULT_IDLE_TIMEOUT
-          options["startup_timeout"] ||= DEFAULT_STARTUP_TIMEOUT
-          validate name, options
-          [name, OpenStruct.new(options)]
-        end
-
-        @apps = Hash[*configs.flatten]
+    # Private: convert a YML hash to an array of name/OpenStruct pairs
+    #
+    # Does validation for each app config and raises an error if anything is
+    # wrong. Sets default values for missing options, and assigns colors to each
+    # app config.
+    #
+    # configs - a hash of config data
+    # boring  - whether or not to use a rainbow of colors for the apps
+    #
+    # Returns [ [app_name, OpenStruct], ... ]
+    def convert_and_validate(configs, boring)
+      assign_colors configs, boring
+      configs.map do |name, options|
+        options["name"] = name
+        options["hostname"] ||= DEFAULT_HOSTNAME
+        options["idle_timeout"] ||= DEFAULT_IDLE_TIMEOUT
+        options["startup_timeout"] ||= DEFAULT_STARTUP_TIMEOUT
+        validate name, options
+        [name, OpenStruct.new(options)]
       end
-      @apps
     end
 
     # Private: validate that the options have all of the required keys
@@ -34,5 +50,23 @@ module Ringleader
         end
       end
     end
+
+    # Private: assign a color to each application configuration.
+    #
+    # configs - the config data to modify
+    # boring  - use boring standard terminal colors instead of a rainbow.
+    def assign_colors(configs, boring)
+      if boring
+        configs.values.each.with_index do |config, i|
+          config["color"] = TERMINAL_COLORS[ i % TERMINAL_COLORS.length ]
+        end
+      else
+        offset = 360/configs.size
+        configs.values.each.with_index do |config, i|
+          config["color"] = Color::HSL.new(offset * i, 100, 50).html
+        end
+      end
+    end
+
   end
 end
