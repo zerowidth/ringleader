@@ -9,11 +9,42 @@
 
     <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
     <style>
-      body { padding-top: 60px; /* 60px to make the container go all the way to the bottom of the top bar */ }
-      td span { float: left; margin-right: 5px; }
-      td .buttons { text-align: right; }
-      td .actions { width: 100%; }
-      .bar { background-color: #888 !important; }
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the top bar */
+      }
+      .app {
+        padding-bottom: 5px;
+        margin-bottom: 5px;
+        border-bottom: 1px solid #CCC;
+        clear: both;
+      }
+      .app:last-child {
+        border-bottom: 0;
+      }
+      .app .status {
+        float: left;
+        margin-top: 5px;
+        margin-right: 5px;
+      }
+      .app .name {
+        float: left;
+        margin-top: 4px;
+        margin-right: 20px;
+        font-weight: bold;
+      }
+      .app .buttons {
+        text-align: right;
+      }
+      .loading {
+        padding-top: 5px;
+        height: 23px; /* 23 + 5 = 28, height of buttons */
+      }
+      .loading .progress {
+        margin-bottom: 0px;
+      }
+      .bar {
+        background-color: #AAA !important;
+      }
     </style>
     <link href="/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 
@@ -32,51 +63,49 @@
   <body>
 
     <script type="text/x-mustache-tmpl" id="app-template">
-      <td><strong>{{ name }}</strong></td>
-      <td>
-      {{#running?}}
-        <span class="label label-success">RUNNING</span>
-      {{/running?}}
-      {{#stopped?}}
-        <span class="label label-inverse">STOPPED</span>
-      {{/stopped?}}
-      {{#disabled?}}
-        <span class="label">DISABLED</span>
-      {{/disabled?}}
-        <div class="actions">
-          <div class="buttons">
-          {{#running?}}
-            <button class="stop btn btn-small btn-inverse">
-            <i class="icon-stop icon-white">&nbsp;</i>
-            Stop
-            </button>
-            <button class="restart btn btn-small btn-info">
-            <i class="icon-refresh icon-white">&nbsp;</i>
-            Restart
-            </button>
-          {{/running?}}
-          {{#stopped?}}
-            <button class="start btn btn-small btn-success">
-            <i class="icon-play icon-white">&nbsp;</i>
-            Start
-            </button>
-            <button class="disable btn btn-small">
-            <i class="icon-remove">&nbsp;</i>
-            Disable
-            </button>
-          {{/stopped?}}
-          {{#disabled?}}
-            <button class="enable btn btn-small">
-            <i class="icon-ok">&nbsp;</i>
-            Enable
-            </button>
-          {{/disabled?}}
-          </div>
+        {{#running?}}
+          <span class="status label label-success">RUNNING</span>
+        {{/running?}}
+        {{#stopped?}}
+          <span class="status label label-info">STOPPED</span>
+        {{/stopped?}}
+        {{#disabled?}}
+          <span class="status label">DISABLED</span>
+        {{/disabled?}}
+      <span class="name">{{ name }}</span>
+        <div class="buttons">
+        {{#running?}}
+          <button class="stop btn btn-small btn-inverse">
+          <i class="icon-stop icon-white">&nbsp;</i>
+          Stop
+          </button>
+          <button class="restart btn btn-small btn-info">
+          <i class="icon-refresh icon-white">&nbsp;</i>
+          Restart
+          </button>
+        {{/running?}}
+        {{#stopped?}}
+          <button class="start btn btn-small btn-success">
+          <i class="icon-play icon-white">&nbsp;</i>
+          Start
+          </button>
+          <button class="disable btn btn-small">
+          <i class="icon-remove">&nbsp;</i>
+          Disable
+          </button>
+        {{/stopped?}}
+        {{#disabled?}}
+          <button class="enable btn btn-small">
+          <i class="icon-ok">&nbsp;</i>
+          Enable
+          </button>
+        {{/disabled?}}
+        </div>
+        <div class="loading">
           <div class="progress progress-striped progress-gray active">
             <div class="bar" style="width: 100%;"></div>
           </div>
         </div>
-      </td>
     </script>
 
     <div class="navbar navbar-fixed-top">
@@ -88,8 +117,8 @@
     </div>
 
     <div class="container">
-      <table id="apps" class="table table-striped">
-      </table>
+      <div id="apps">
+      </div>
     </div>
 
     <script src="/jquery-1.7.2.min.js"></script>

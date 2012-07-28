@@ -47,7 +47,7 @@ var Apps = Backbone.Collection.extend({
 });
 
 var AppControl = Backbone.View.extend({
-  tagName: 'tr',
+  className: 'app',
   initialize: function() {
     this.template = $('#app-template');
     this.model.bind('change', this.render, this);
@@ -63,11 +63,11 @@ var AppControl = Backbone.View.extend({
     $(this.el).html(this.template.mustache(this.model));
     if(this.model.get('waiting')) {
       this.$('.buttons').hide();
-      this.$('.progress').show();
+      this.$('.loading').show();
     }
     else {
       this.$('.buttons').show();
-      this.$('.progress').hide();
+      this.$('.loading').hide();
     }
     return this;
   },
