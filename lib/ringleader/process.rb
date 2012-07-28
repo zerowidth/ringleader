@@ -14,8 +14,6 @@ module Ringleader
     def initialize(config)
       @config = config
       @starting = @running = false
-      @restart_file = File.expand_path(config.dir + "/tmp/restart.txt")
-      @mtime = File.exist?(@restart_file) ? File.mtime(@restart_file).to_i : 0
     end
 
     # Public: query if the app is running
@@ -32,11 +30,6 @@ module Ringleader
     #
     # Returns true if the app started, false if not.
     def start
-      if restart?
-        info "tmp/restart.txt modified, restarting..."
-        stop
-      end
-
       if @running
         true
       elsif @starting
@@ -143,17 +136,6 @@ module Ringleader
       Thread.new do
         until input.eof?
           info input.gets.strip
-        end
-      end
-    end
-
-    # Check the mtime of the tmp/restart.txt file. If modified, restart the app.
-    def restart?
-      if File.exist?(@restart_file)
-        new_mtime = File.mtime(@restart_file).to_i
-        if new_mtime > @mtime
-          @mtime = new_mtime
-          true
         end
       end
     end
