@@ -23,17 +23,18 @@ module Ringleader
     end
 
     def start
+      return if @process.running?
       info "starting #{@config.name}..."
       @process.start
     end
 
     def stop
+      return unless @process.running?
       info "stopping #{@config.name}..."
       @process.stop
     end
 
     def enable
-      info "enabling #{@config.name}..."
       return if @server
       @server = TCPServer.new @config.hostname, @config.server_port
       @enabled = true
@@ -62,7 +63,7 @@ module Ringleader
 
     def run
       start_activity_timer if @config.idle_timeout > 0
-      info "server listening for connections for #{@config.name} on #{@config.hostname}:#{@config.server_port}"
+      info "listening for connections for #{@config.name} on #{@config.hostname}:#{@config.server_port}"
       loop { handle_connection! @server.accept }
     rescue IOError
       @server.close if @server
