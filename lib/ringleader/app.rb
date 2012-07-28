@@ -14,6 +14,10 @@ module Ringleader
       enable!
     end
 
+    def name
+      @config.name
+    end
+
     def enabled?
       @enabled
     end

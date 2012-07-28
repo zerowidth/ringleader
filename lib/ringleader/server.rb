@@ -4,11 +4,12 @@ module Ringleader
     include Celluloid::Logger
 
     ASSET_PATH = Pathname.new(File.expand_path("../../../public", __FILE__))
+    ACTIONS = %w(enable disable stop start restart).freeze
 
-    def initialize(apps, host="localhost", port=42000)
+    def initialize(controller, host="localhost", port=42000)
       debug "starting webserver on #{host}:#{port}"
       super host, port, &method(:on_connection)
-      @apps = apps
+      @controller = controller
     end
 
     def on_connection(connection)
@@ -26,40 +27,71 @@ module Ringleader
 
       if !path or path[".."]
         connection.respond :not_found, "Not found"
+        debug "404 #{path}"
         return
       end
 
       case request.method
       when :get
-        if path == "/apps.json"
+        if path == "apps"
           app_index connection
+        elsif path =~ %r(^apps/\w+)
+          show_app path, request.body, connection
         else
           static_file path, connection
         end
-      when :put
+      when :post
         update_app path, request.body, connection
       end
     end
 
     def app_index(connection)
-      connection.respond :ok, "{}"
+      json = @controller.apps.map { |app| app_as_json(app) }.to_json
+      connection.respond :ok, json
+      debug "GET /apps: 200"
     end
 
     def static_file(path, connection)
       filename = ASSET_PATH + path
       if filename.exist?
-        debug "GET #{path}: 200"
         mime_type = content_type_for filename.extname
         filename.open("r") do |file|
           connection.respond :ok, {"Content-type" => mime_type}, file
         end
+        debug "GET #{path}: 200"
       else
-        debug "GET #{path}: 404"
         connection.respond :not_found, "Not found"
+        debug "GET #{path}: 404"
+      end
+    end
+
+    def show_app(uri, body, connection)
+      _, name, _ = uri.split("/")
+      app = @controller.app name
+      if app
+        connection.respond :ok, app_as_json(app).to_json
+        debug "GET #{uri}: 200"
+      else
+        connection.respond :not_found, "Not found"
+        debug "GET #{uri}: 404"
       end
     end
 
     def update_app(uri, body, connection)
+      _, name, action = uri.split("/")
+      app = @controller.app name
+      if app && ACTIONS.include?(action)
+        app.send action
+        connection.respond :ok, app_as_json(app).to_json
+        debug "POST #{uri}: 200"
+      else
+        connection.respond :not_found, "Not found"
+        debug "POST #{uri}: 404"
+      end
+    end
+
+    def app_as_json(app)
+      AppSerializer.new(app)
     end
 
     def content_type_for(extname)

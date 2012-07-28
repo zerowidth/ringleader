@@ -1,17 +1,43 @@
 var App = Backbone.Model.extend({
-  url: function(extra) {
-    return this.urlRoot + '/' + this.get('name') + extra;
+  idAttribute: 'name',
+
+  initialize: function() {
+    var model = this;
+    // unfortunately, there's not a nice way of updating apps collectively
+    // without replacing the entire collection each time.
+    this.refresh = setInterval(function() { model.fetch(); }, 5000);
   },
+
+  url: function(extra) {
+    if(extra) {
+      return '/apps/' + this.get('name') + '/' + extra;
+    }
+    else {
+      return '/apps/' + this.get('name');
+    }
+  },
+
+  // for mustache, these must be exclusive
+  name: function() { return this.get('name'); },
+  'disabled?': function() { return !this.get('enabled'); },
+  'stopped?': function() { return this.get('enabled') && !this.get('running'); },
+  'running?': function() { return this.get('enabled') && this.get('running'); },
+
+  // actions
   enable: function() { this.request('enable'); },
   disable: function() { this.request('disable'); },
   stop: function() { this.request('stop'); },
   start: function() { this.request('start'); },
   restart: function() { this.request('restart'); },
+
   request: function(action) {
-    console.log(action, this.get('name'));
-    $.post({
-      url: this.url('/' + action)
-    });
+    var model = this;
+    this.set({waiting: true});
+    console.log(action, this.get('name'), this.url(action));
+    $.post(
+      this.url(action),
+      function(data) { model.set(_.extend({}, data, {waiting: false})); },
+      'json');
   }
 });
 
@@ -34,7 +60,15 @@ var AppControl = Backbone.View.extend({
     'click .disable' : 'disable'
   },
   render: function() {
-    $(this.el).html(this.template.mustache(this.model.toJSON()));
+    $(this.el).html(this.template.mustache(this.model));
+    if(this.model.get('waiting')) {
+      this.$('.buttons').hide();
+      this.$('.progress').show();
+    }
+    else {
+      this.$('.buttons').show();
+      this.$('.progress').hide();
+    }
     return this;
   },
   start: function() { this.model.start(); return false; },
@@ -50,6 +84,9 @@ var ControlPanel = Backbone.View.extend({
     this.collection = new Apps();
     this.collection.bind('add', this.addApp, this);
     this.collection.bind('reset', this.addAll, this);
+    this.collection.fetch();
+
+    var self = this;
   },
 
   addApp: function(app) {
@@ -58,6 +95,7 @@ var ControlPanel = Backbone.View.extend({
   },
 
   addAll: function(apps) {
+    this.$el.html('');
     apps.each(this.addApp, this);
   }
 
@@ -65,10 +103,4 @@ var ControlPanel = Backbone.View.extend({
 
 $(function() {
   window.control_panel = new ControlPanel();
-  control_panel.collection.reset([
-    { name: 'main_site', 'running?': true },
-    { name: 'admin_app', 'stopped?': true },
-    { name: 'resque_workers', 'disabled?': true }
-  ]);
-
 });

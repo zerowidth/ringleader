@@ -2,17 +2,18 @@
 <html>
   <head>
 
-
-    <title>Ringleader</title>
+    <title>Ringleader Control Panel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Ringleader control panel">
     <meta name="author" content="Nathan Witmer">
 
     <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
     <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
+      body { padding-top: 60px; /* 60px to make the container go all the way to the bottom of the top bar */ }
+      td span { float: left; margin-right: 5px; }
+      td .buttons { text-align: right; }
+      td .actions { width: 100%; }
+      .bar { background-color: #888 !important; }
     </style>
     <link href="/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 
@@ -32,41 +33,50 @@
 
     <script type="text/x-mustache-tmpl" id="app-template">
       <td><strong>{{ name }}</strong></td>
-        {{#running?}}
-        <td><span class="label label-success">RUNNING</span></td>
-        <td>
-          <button class="stop btn btn-small btn-inverse">
+      <td>
+      {{#running?}}
+        <span class="label label-success">RUNNING</span>
+      {{/running?}}
+      {{#stopped?}}
+        <span class="label label-inverse">STOPPED</span>
+      {{/stopped?}}
+      {{#disabled?}}
+        <span class="label">DISABLED</span>
+      {{/disabled?}}
+        <div class="actions">
+          <div class="buttons">
+          {{#running?}}
+            <button class="stop btn btn-small btn-inverse">
             <i class="icon-stop icon-white">&nbsp;</i>
             Stop
-          </button>
-          <button class="restart btn btn-small btn-info">
+            </button>
+            <button class="restart btn btn-small btn-info">
             <i class="icon-refresh icon-white">&nbsp;</i>
             Restart
-          </button>
-        </td>
-        {{/running?}}
-        {{#stopped?}}
-        <td><span class="label label-inverse">STOPPED</span></td>
-        <td>
-          <button class="start btn btn-small btn-success">
+            </button>
+          {{/running?}}
+          {{#stopped?}}
+            <button class="start btn btn-small btn-success">
             <i class="icon-play icon-white">&nbsp;</i>
             Start
-          </button>
-          <button class="disable btn btn-small btn-danger">
-            <i class="icon-remove icon-white">&nbsp;</i>
+            </button>
+            <button class="disable btn btn-small">
+            <i class="icon-remove">&nbsp;</i>
             Disable
-          </button>
-        </td>
-        {{/stopped?}}
-        {{#disabled?}}
-        <td><span class="label">DISABLED</span></td>
-        <td>
-          <button class="enable btn btn-small">
+            </button>
+          {{/stopped?}}
+          {{#disabled?}}
+            <button class="enable btn btn-small">
             <i class="icon-ok">&nbsp;</i>
             Enable
-          </button>
-        </td>
-        {{/disabled?}}
+            </button>
+          {{/disabled?}}
+          </div>
+          <div class="progress progress-striped progress-gray active">
+            <div class="bar" style="width: 100%;"></div>
+          </div>
+        </div>
+      </td>
     </script>
 
     <div class="navbar navbar-fixed-top">
