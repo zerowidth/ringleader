@@ -31,6 +31,7 @@ module Ringleader
 
     def start_app_server(app_configs)
       controller = Controller.new(app_configs)
+      Server.new(controller)
 
       # gracefully die instead of showing an interrupted sleep below
       trap("INT") do

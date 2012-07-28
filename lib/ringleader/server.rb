@@ -5,9 +5,10 @@ module Ringleader
 
     ASSET_PATH = Pathname.new(File.expand_path("../../../public", __FILE__))
 
-    def initialize(host="localhost", port="4200")
+    def initialize(apps, host="localhost", port=42000)
       debug "starting webserver on #{host}:#{port}"
       super host, port, &method(:on_connection)
+      @apps = apps
     end
 
     def on_connection(connection)
