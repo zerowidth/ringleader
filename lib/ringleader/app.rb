@@ -29,12 +29,15 @@ module Ringleader
     def start
       return if @process.running?
       info "starting #{@config.name}..."
-      @process.start
+      if @process.start
+        start_activity_timer
+      end
     end
 
     def stop
       return unless @process.running?
       info "stopping #{@config.name}..."
+      stop_activity_timer
       @process.stop
     end
 
@@ -56,10 +59,7 @@ module Ringleader
     def disable
       info "disabling #{@config.name}..."
       return unless @server
-      if @activity_timer
-        @activity_timer.cancel
-        @activity_timer = nil
-      end
+      stop_activity_timer
       @process.stop
       @server.close
       @server = nil
@@ -71,7 +71,6 @@ module Ringleader
     end
 
     def run
-      start_activity_timer if @config.idle_timeout > 0
       info "listening for connections for #{@config.name} on #{@config.hostname}:#{@config.server_port}"
       loop { handle_connection! @server.accept }
     rescue IOError
@@ -85,7 +84,7 @@ module Ringleader
       started = @process.start
       if started
         proxy_to_app! socket
-        @activity_timer.reset if @activity_timer
+        reset_activity_timer
       else
         error "could not start app"
         socket.close
@@ -97,11 +96,23 @@ module Ringleader
     end
 
     def start_activity_timer
+      return if @activity_timer || @config.idle_timeout == 0
       @activity_timer = every @config.idle_timeout do
         if @process.running?
           info "#{@config.name} has been idle for #{@config.idle_timeout} seconds, shutting it down"
           @process.stop
         end
+      end
+    end
+
+    def reset_activity_timer
+      @activity_timer.reset if @activity_timer
+    end
+
+    def stop_activity_timer
+      if @activity_timer
+        @activity_timer.cancel
+        @activity_timer = nil
       end
     end
 
