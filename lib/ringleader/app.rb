@@ -34,6 +34,11 @@ module Ringleader
       @process.stop
     end
 
+    def restart
+      stop
+      start
+    end
+
     def enable
       return if @server
       @server = TCPServer.new @config.hostname, @config.server_port

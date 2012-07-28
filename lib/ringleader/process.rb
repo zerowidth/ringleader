@@ -121,13 +121,19 @@ module Ringleader
       end
 
       @running = wait :running
+
       @starting = false
       timer.cancel
 
       @running
     rescue Errno::ENOENT
-      debug "could not start process `#{config.command}`"
+      @starting = false
+      @running = false
       false
+    ensure
+      unless @running
+        warn "could not start `#{config.command}`"
+      end
     end
 
     # Private: proxy output streams to the logger.
