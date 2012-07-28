@@ -31,7 +31,6 @@
   <body>
 
     <script type="text/x-mustache-tmpl" id="app-template">
-      <tr id="app-{{ name }}">
       <td><strong>{{ name }}</strong></td>
         {{#running?}}
         <td><span class="label label-success">RUNNING</span></td>
@@ -47,34 +46,33 @@
         </td>
         {{/running?}}
         {{#stopped?}}
-          <td><span class="label label-inverse">STOPPED</span></td>
-          <td>
-            <button class="start btn btn-small btn-success">
-              <i class="icon-play icon-white">&nbsp;</i>
-              Start
-            </button>
-            <button class="disable btn btn-small btn-danger">
-              <i class="icon-remove icon-white">&nbsp;</i>
-              Disable
-            </button>
-          </td>
+        <td><span class="label label-inverse">STOPPED</span></td>
+        <td>
+          <button class="start btn btn-small btn-success">
+            <i class="icon-play icon-white">&nbsp;</i>
+            Start
+          </button>
+          <button class="disable btn btn-small btn-danger">
+            <i class="icon-remove icon-white">&nbsp;</i>
+            Disable
+          </button>
+        </td>
         {{/stopped?}}
         {{#disabled?}}
-          <td><span class="label">DISABLED</span></td>
-          <td>
-            <button class="enable btn btn-small">
-              <i class="icon-ok">&nbsp;</i>
-              Enable
-            </button>
-          </td>
+        <td><span class="label">DISABLED</span></td>
+        <td>
+          <button class="enable btn btn-small">
+            <i class="icon-ok">&nbsp;</i>
+            Enable
+          </button>
+        </td>
         {{/disabled?}}
-      </tr>
     </script>
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="#">Ringleader Controls</a>
+          <a class="brand" href="#">Ringleader Control Panel</a>
         </div>
       </div>
     </div>
@@ -87,6 +85,7 @@
     <script src="/jquery-1.7.2.min.js"></script>
     <script src="/jquery.mustache.js"></script>
     <script src="/underscore-min.js"></script>
+    <script src="/backbone-min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script src="/app.js"></script>
   </body>
