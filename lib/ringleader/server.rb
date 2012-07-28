@@ -3,7 +3,7 @@ module Ringleader
     include Celluloid::IO # hurk
     include Celluloid::Logger
 
-    ASSET_PATH = Pathname.new(File.expand_path("../../../public", __FILE__))
+    ASSET_PATH = Pathname.new(File.expand_path("../../../assets", __FILE__))
     ACTIONS = %w(enable disable stop start restart).freeze
 
     def initialize(controller, host="localhost", port=42000)
