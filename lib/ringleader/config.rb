@@ -61,13 +61,14 @@ module Ringleader
     # configs - the config data to modify
     # boring  - use boring standard terminal colors instead of a rainbow.
     def assign_colors(configs, boring)
+      sorted = configs.sort_by(&:first).map(&:last)
       if boring
-        configs.values.each.with_index do |config, i|
+        sorted.each.with_index do |config, i|
           config["color"] = TERMINAL_COLORS[ i % TERMINAL_COLORS.length ]
         end
       else
         offset = 360/configs.size
-        configs.values.each.with_index do |config, i|
+        sorted.each.with_index do |config, i|
           config["color"] = Color::HSL.new(offset * i, 100, 50).html
         end
       end

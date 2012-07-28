@@ -10,6 +10,14 @@ module Ringleader
       end
     end
 
+    def apps
+      @apps.values.sort_by { |a| a.name }
+    end
+
+    def app(name)
+      @apps[name]
+    end
+
     def stop
       exit if @stopping # if ctrl-c called twice...
       @stopping = true
