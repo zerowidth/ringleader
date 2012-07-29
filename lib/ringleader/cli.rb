@@ -17,7 +17,17 @@ module Ringleader
       configure_logging(opts.verbose ? "debug" : "info")
 
       apps = Config.new(argv.first, opts.boring).apps
-      start_app_server apps
+
+      controller = Controller.new(apps)
+      Server.new(controller, opts.host, opts.port)
+
+      # gracefully die instead of showing an interrupted sleep below
+      trap("INT") do
+        controller.stop
+        exit
+      end
+
+      sleep
     end
 
     def configure_logging(level)
@@ -27,19 +37,6 @@ module Ringleader
       Celluloid.logger.formatter = lambda do |severity, time, progname, msg|
         format % [severity, time.strftime(date_format), time.usec, msg]
       end
-    end
-
-    def start_app_server(app_configs)
-      controller = Controller.new(app_configs)
-      Server.new(controller)
-
-      # gracefully die instead of showing an interrupted sleep below
-      trap("INT") do
-        controller.stop
-        exit
-      end
-
-      sleep
     end
 
     def die(msg)
@@ -108,8 +105,18 @@ something like this:
 OPTIONS
         banner
 
-        opt "verbose", "log at debug level", :long => "--verbose", :short => "-v", :type => :boolean
-        opt "boring", "use boring colors instead of a fabulous rainbow", :long => "--boring", :short => "-b", :type => :boolean, :default => false
+        opt "verbose", "log at debug level",
+          :long => "--verbose", :short => "-v",
+          :type => :boolean, :default => false
+        opt "host", "host for web control panel",
+          :long => "--host", :short => "-H",
+          :default => "localhost"
+        opt "port", "port for the web control panel",
+          :long => "--port", :short => "-p",
+          :type => :integer, :default => 42000
+        opt "boring", "use boring colors instead of a fabulous rainbow",
+          :long => "--boring", :short => "-b",
+          :type => :boolean, :default => false
 
       end
     end

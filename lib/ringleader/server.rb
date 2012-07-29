@@ -6,10 +6,11 @@ module Ringleader
     ASSET_PATH = Pathname.new(File.expand_path("../../../assets", __FILE__))
     ACTIONS = %w(enable disable stop start restart).freeze
 
-    def initialize(controller, host="localhost", port=42000)
+    def initialize(controller, host, port)
       debug "starting webserver on #{host}:#{port}"
       super host, port, &method(:on_connection)
       @controller = controller
+      info "web control panel started on http://#{host}:#{port}"
     end
 
     def on_connection(connection)
