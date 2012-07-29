@@ -66,6 +66,8 @@ main_app:
   idle_timeout: 6000
   # application startup timeout
   startup_timeout: 180
+  # set the app to be disabled when ringleader starts
+  disabled: true
 other_app:
   [...]
 ```
