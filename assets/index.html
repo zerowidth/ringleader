@@ -64,13 +64,13 @@
 
     <script type="text/x-mustache-tmpl" id="app-template">
         {{#running?}}
-          <span class="status label label-success">RUNNING</span>
+          <span class="status label label-success">Running</span>
         {{/running?}}
         {{#stopped?}}
-          <span class="status label label-info">STOPPED</span>
+          <span class="status label label-info">Waiting</span>
         {{/stopped?}}
         {{#disabled?}}
-          <span class="status label">DISABLED</span>
+          <span class="status label">Disabled</span>
         {{/disabled?}}
       <span class="name">{{ name }}</span>
         <div class="buttons">
