@@ -48,11 +48,11 @@ module Ringleader
 
     def enable
       return if @server
-      @server = TCPServer.new @config.hostname, @config.server_port
+      @server = TCPServer.new @config.host, @config.server_port
       @enabled = true
       run!
     rescue Errno::EADDRINUSE
-      error "could not bind to #{@config.hostname}:#{@config.server_port} for #{@config.name}!"
+      error "could not bind to #{@config.host}:#{@config.server_port} for #{@config.name}!"
       @server = nil
     end
 
@@ -71,7 +71,7 @@ module Ringleader
     end
 
     def run
-      info "listening for connections for #{@config.name} on #{@config.hostname}:#{@config.server_port}"
+      info "listening for connections for #{@config.name} on #{@config.host}:#{@config.server_port}"
       loop { handle_connection! @server.accept }
     rescue IOError
       @server.close if @server
@@ -92,7 +92,7 @@ module Ringleader
     end
 
     def proxy_to_app(socket)
-      SocketProxy.new socket, @config.hostname, @config.app_port
+      SocketProxy.new socket, @config.host, @config.app_port
     end
 
     def start_activity_timer

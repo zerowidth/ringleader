@@ -57,7 +57,7 @@ main_app:
   # the command to run to start up the app server. Executed under "bash -c".
   command: "foreman start"
   # the host to listen on, defaults to 127.0.0.1
-  hostname: 0.0.0.0
+  host: 0.0.0.0
   # the port ringleader listens on
   server_port: 3000
   # the port the application listens on

@@ -15,8 +15,8 @@ describe Ringleader::Config do
         expect(config.dir).to eq("~/apps/main")
       end
 
-      it "includes a default hostname" do
-        expect(subject.apps["admin"].hostname).to eq("127.0.0.1")
+      it "includes a default host" do
+        expect(subject.apps["admin"].host).to eq("127.0.0.1")
       end
 
       it "includes a default idle timeout" do

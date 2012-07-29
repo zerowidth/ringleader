@@ -3,7 +3,7 @@ module Ringleader
 
     DEFAULT_IDLE_TIMEOUT = 1800
     DEFAULT_STARTUP_TIMEOUT = 30
-    DEFAULT_HOSTNAME = "127.0.0.1"
+    DEFAULT_HOST= "127.0.0.1"
     REQUIRED_KEYS = %w(dir command app_port server_port)
 
     TERMINAL_COLORS = [:red, :green, :yellow, :blue, :magenta, :cyan]
@@ -34,7 +34,7 @@ module Ringleader
       assign_colors configs, boring
       configs.map do |name, options|
         options["name"] = name
-        options["hostname"] ||= DEFAULT_HOSTNAME
+        options["host"] ||= DEFAULT_HOST
         options["idle_timeout"] ||= DEFAULT_IDLE_TIMEOUT
         options["startup_timeout"] ||= DEFAULT_STARTUP_TIMEOUT
 

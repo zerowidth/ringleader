@@ -2,7 +2,7 @@
 main_site:
   dir: "~/apps/main"
   command: "bundle exec foreman start"
-  hostname: "0.0.0.0"
+  host: "0.0.0.0"
   server_port: 3000
   app_port: 4000
   idle_timeout: 1800
