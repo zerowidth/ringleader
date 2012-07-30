@@ -16,10 +16,26 @@ Ringleader is an application proxy for socket applications.
 ## What's it for?
 
 I designed this for a large suite of apps running behind nginx with a somewhat
-complex routing configuration in nginx. Additionally, many of the apps required
-active [resque](https://github.com/defunkt/resque/) pollers to run properly.
-Ultimately this meant having many terminal windows open just to make a few
-requests to the apps. Instead, I wanted something to manage all that for me:
+complex routing configuration. Additionally, many of the apps required active
+[resque](https://github.com/defunkt/resque/) pollers to run properly. Ultimately
+this meant having many terminal windows open just to make a few requests to the
+apps. Instead, I wanted something to manage all that for me.
+
+Before, each app in a terminal, started manually:
+
+                                    +-------+
+                                 +->| app 1 |
+                                 |  +-------+
+                  +-----------+  |
+      http        |           |  |  +-------+
+    requests ---> |   nginx   +--+->| app 2 |
+                  |           |  |  +-------+
+                  +-----------+  |
+                                 |  +-------+
+                                 +->| app n |
+                                    +-------+
+
+After, apps managed by ringleader, started on demand:
 
                                                         +-------+
                                                      +->| app 1 |
@@ -33,10 +49,21 @@ requests to the apps. Instead, I wanted something to manage all that for me:
                                                      +->| app n |
                                                         +-------+
 
-Ringleader is essentially a generalized replacement for [pow](http://pow.cx/),
-and allows on-demand startup and proxying for any TCP server programs. It can
-start a foreman or ruby or any other process which opens a socket. For example,
-I started resque pollers alongside applications using foreman.
+Ringleader gives on-demand startup and proxying for any TCP server program. It
+can be a rails app managed with foreman, a node app, or simply a shell command
+to start netcat.
+
+## Isn't this just like inetd?
+
+Pretty much. But with pretty colors in console and a nice web interface.
+
+## Web interface?
+
+Yep. Hook it up with [fluid](http://fluidapp.com) and put it in the menu bar. By
+default it runs at [http://localhost:42000](http://localhost:42000).
+
+
+![screenshot of ringleader control panel](/aniero/ringleader/raw/master/screenshot.png)
 
 ## Installation
 
@@ -52,22 +79,25 @@ like this:
 ---
 # name of app (used in logging)
 main_app:
-  # working directory, where to start the app from
-  dir: "~/apps/main"
-  # the command to run to start up the app server. Executed under "bash -c".
-  command: "foreman start"
-  # the host to listen on, defaults to 127.0.0.1
-  host: 0.0.0.0
-  # the port ringleader listens on
-  server_port: 3000
-  # the port the application listens on
-  app_port: 4000
-  # idle timeout in seconds
-  idle_timeout: 6000
-  # application startup timeout
-  startup_timeout: 180
-  # set the app to be disabled when ringleader starts
-  disabled: true
+
+  # Required settings
+  dir: "~/apps/main"       # Working directory
+  command: "foreman start" # The command to run to start up the app server.
+                           # Executed under "bash -c".
+  server_port: 3000        # The port ringleader listens on
+  app_port: 4000           # The port the application listens on
+
+  # Optional settings
+  host: 127.0.0.1          # The host ringleader should listen on
+  idle_timeout: 6000       # Idle timeout in seconds
+  startup_timeout: 180     # Application startup timeout
+  disabled: true           # Set the app to be disabled when ringleader starts
+
+  # If you have an application managed by rvm, this setting automatically adds
+  # the rvm-specific shell setup before executing the given command. This
+  # supersedes the `command` setting.
+  rvm: "foreman start"
+
 other_app:
   [...]
 ```

@@ -85,22 +85,24 @@ something like this:
     ---
     # name of app (used in logging)
     main_app:
-      # working directory, where to start the app from
-      dir: "~/apps/main"
-      # the command to run to start up the app server. Executed under "bash -c".
-      command: "foreman start"
-      # the host to listen on, defaults to 127.0.0.1
-      host: 0.0.0.0
-      # the port ringleader listens on
-      server_port: 3000
-      # the port the application listens on
-      app_port: 4000
-      # idle timeout in seconds, defaults to #{Config::DEFAULT_IDLE_TIMEOUT}. 0 means "never".
-      idle_timeout: 6000
-      # application startup timeout, defaults to #{Config::DEFAULT_STARTUP_TIMEOUT}.
-      startup_timeout: 180
-    other_app:
-      [...]
+
+      # Required settings
+      dir: "~/apps/main"       # Working directory
+      command: "foreman start" # The command to run to start up the app server.
+                               # Executed under "bash -c".
+      server_port: 3000        # The port ringleader listens on
+      app_port: 4000           # The port the application listens on
+
+      # Optional settings
+      host: 127.0.0.1          # The host ringleader should listen on
+      idle_timeout: 6000       # Idle timeout in seconds
+      startup_timeout: 180     # Application startup timeout
+      disabled: true           # Set the app to be disabled when ringleader starts
+
+      # If you have an application managed by rvm, this setting automatically
+      # adds the rvm-specific shell setup before executing the given command.
+      # This supersedes the `command` setting.
+      rvm: "foreman start"
 
 OPTIONS
         banner
