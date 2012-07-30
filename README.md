@@ -72,6 +72,13 @@ other_app:
   [...]
 ```
 
+## License
+
+MIT, see `LICENSE`.
+
+Top hat icon by [Luka Taylor](http://lukataylo.deviantart.com/gallery/#/d2g95fp)
+under a Creative Commons Attribution/Non-commercial license.
+
 ## Contributing
 
 1. Fork it

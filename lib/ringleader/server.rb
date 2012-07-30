@@ -103,6 +103,10 @@ module Ringleader
         "application/json"
       when ".css"
         "text/css"
+      when ".ico"
+        "image/x-icon"
+      when ".png"
+        "image/png"
       else
         "text/plain"
       end
