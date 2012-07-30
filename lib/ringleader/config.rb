@@ -43,6 +43,9 @@ module Ringleader
         end
 
         validate name, options
+
+        options["dir"] = File.expand_path options["dir"]
+
         [name, OpenStruct.new(options)]
       end
     end
