@@ -41,6 +41,9 @@ module Ringleader
 
         if command = options.delete("rvm")
           options["command"] = "source ~/.rvm/scripts/rvm && rvm --with-rubies rvmrc exec -- #{command}"
+        elsif command = options.delete("rbenv")
+          options["command"] = "rbenv exec #{command}"
+          options["env"]["RBENV_VERSION"] = nil
         end
 
         validate name, options

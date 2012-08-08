@@ -1,0 +1,7 @@
+---
+rbenv_app:
+  dir: "~/apps/main"
+  rbenv: "bundle exec foreman start"
+  server_port: 3000
+  app_port: 4000
+

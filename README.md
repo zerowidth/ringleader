@@ -101,6 +101,9 @@ main_app:
   # supersedes the `command` setting.
   rvm: "foreman start"
 
+  # Likewise for rbenv:
+  rbenv: "foreman start"
+
 other_app:
   [...]
 ```
