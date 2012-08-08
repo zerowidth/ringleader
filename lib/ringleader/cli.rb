@@ -107,6 +107,9 @@ something like this:
       # This supersedes the `command` setting.
       rvm: "foreman start"
 
+      # Likewise for rbenv:
+      rbenv: "foreman start"
+
 OPTIONS
         banner
 
