@@ -95,12 +95,15 @@ module Ringleader
 
       # give the child process a terminal so output isn't buffered
       @master, slave = PTY.open
-      @pid = ::Process.spawn %Q(bash -c "#{config.command}"),
+      @pid = ::Process.spawn(
+        config.env,
+        %Q(bash -c "#{config.command}"),
         :in => slave,
         :out => slave,
         :err => slave,
         :chdir => config.dir,
         :pgroup => true
+      )
       slave.close
       proxy_output @master
       debug "started with pid #{@pid}"

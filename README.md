@@ -92,6 +92,9 @@ main_app:
   idle_timeout: 6000       # Idle timeout in seconds
   startup_timeout: 180     # Application startup timeout
   disabled: true           # Set the app to be disabled when ringleader starts
+  env:                     # Override or set environment variables inherited
+    FOO: hello             # from the current environment. Use nil to unset a
+    BAR: nil               # var.
 
   # If you have an application managed by rvm, this setting automatically adds
   # the rvm-specific shell setup before executing the given command. This

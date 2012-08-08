@@ -12,7 +12,7 @@ describe Ringleader::Config do
 
       it "returns a hash of configurations" do
         config = subject.apps["main_site"]
-        expect(config.dir).to eq("~/apps/main")
+        expect(config.dir).to eq(File.expand_path("~/apps/main"))
       end
 
       it "includes a default host" do
@@ -29,6 +29,11 @@ describe Ringleader::Config do
 
       it "sets the config name to match the key in the config file" do
         expect(subject.apps["admin"].name).to eq("admin")
+      end
+
+      it "sets the env hash to an empty hash if not specified" do
+        expect(subject.apps["main_site"].env).to eq({})
+        expect(subject.apps["admin"].env).to have_key("OVERRIDE")
       end
     end
   end
