@@ -90,6 +90,11 @@ module Ringleader
     #
     # Returns true if the app started, false if not.
     def start_app
+      if already_running?
+        warn "#{config.name} already running on port #{config.app_port}"
+        return true
+      end
+
       @starting = true
       info "starting process `#{config.command}`"
 
@@ -130,6 +135,15 @@ module Ringleader
       unless @running
         warn "could not start `#{config.command}`"
       end
+    end
+
+    # Private: check if the app is already running outside ringleader
+    def already_running?
+      socket = TCPSocket.new config.host, config.app_port
+      socket.close
+      true
+    rescue Errno::ECONNREFUSED
+      false
     end
 
     # Private: proxy output streams to the logger.
