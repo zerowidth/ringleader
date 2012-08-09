@@ -11,6 +11,8 @@ admin:
   command: "bundle exec foreman start"
   server_port: 3001
   app_port: 4001
+  env:
+    OVERRIDE: true
 authentication:
   dir: "~/apps/auth"
   command: "bundle exec foreman start"

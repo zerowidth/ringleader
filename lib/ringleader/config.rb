@@ -37,9 +37,13 @@ module Ringleader
         options["host"] ||= DEFAULT_HOST
         options["idle_timeout"] ||= DEFAULT_IDLE_TIMEOUT
         options["startup_timeout"] ||= DEFAULT_STARTUP_TIMEOUT
+        options["env"] ||= {}
 
         if command = options.delete("rvm")
           options["command"] = "source ~/.rvm/scripts/rvm && rvm --with-rubies rvmrc exec -- #{command}"
+        elsif command = options.delete("rbenv")
+          options["command"] = "rbenv exec #{command}"
+          options["env"]["RBENV_VERSION"] = nil
         end
 
         validate name, options

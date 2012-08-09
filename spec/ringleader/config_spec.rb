@@ -12,7 +12,7 @@ describe Ringleader::Config do
 
       it "returns a hash of configurations" do
         config = subject.apps["main_site"]
-        expect(config.dir).to eq("~/apps/main")
+        expect(config.dir).to eq(File.expand_path("~/apps/main"))
       end
 
       it "includes a default host" do
@@ -29,6 +29,11 @@ describe Ringleader::Config do
 
       it "sets the config name to match the key in the config file" do
         expect(subject.apps["admin"].name).to eq("admin")
+      end
+
+      it "sets the env hash to an empty hash if not specified" do
+        expect(subject.apps["main_site"].env).to eq({})
+        expect(subject.apps["admin"].env).to have_key("OVERRIDE")
       end
     end
   end
@@ -61,6 +66,15 @@ describe Ringleader::Config do
     it "replaces the rvm command with a command to use rvm" do
       config = Ringleader::Config.new "spec/fixtures/rvm.yml"
       expect(config.apps["rvm_app"].command).to match(/rvm.*rvmrc.*exec.*foreman/)
+    end
+  end
+
+  context "with a config with a 'rbenv' key instead of 'command'" do
+    it "replaces the 'rbenv' command with an rbenv command and environment" do
+      config = Ringleader::Config.new "spec/fixtures/rbenv.yml"
+      expect(config.apps["rbenv_app"].command).to eq("rbenv exec bundle exec foreman start")
+      expect(config.apps["rbenv_app"].env).to have_key("RBENV_VERSION")
+      expect(config.apps["rbenv_app"].env["RBENV_VERSION"]).to eq(nil)
     end
   end
 
