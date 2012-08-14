@@ -131,6 +131,11 @@ module Ringleader
       @starting = false
       @running = false
       false
+    rescue Errno::EADDRINUSE
+      @starting = false
+      @running = true
+      warn "#{config.name} already running on port #{config.app_port}"
+      return true
     ensure
       unless @running
         warn "could not start `#{config.command}`"
