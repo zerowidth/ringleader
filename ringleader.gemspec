@@ -23,6 +23,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "rainbow", "~> 1.1.4"
   gem.add_dependency "color", "~> 1.4.1"
 
+  gem.add_development_dependency "rake"
   gem.add_development_dependency "rspec", "~> 2.11.0"
   gem.add_development_dependency "guard-rspec"
 end
