@@ -35,7 +35,12 @@ module Ringleader
       elsif @starting
         wait :running
       else
-        start_app
+        if already_running?
+          warn "#{config.name} already running on port #{config.app_port}"
+          return true
+        else
+          start_app
+        end
       end
     end
 
@@ -90,11 +95,6 @@ module Ringleader
     #
     # Returns true if the app started, false if not.
     def start_app
-      if already_running?
-        warn "#{config.name} already running on port #{config.app_port}"
-        return true
-      end
-
       @starting = true
       info "starting process `#{config.command}`"
 
