@@ -98,18 +98,25 @@ module Ringleader
       @starting = true
       info "starting process `#{config.command}`"
 
-      # give the child process a terminal so output isn't buffered
-      @master, slave = PTY.open
-      @pid = ::Process.spawn(
-        config.env,
-        %Q(bash -c "#{config.command}"),
-        :in => slave,
-        :out => slave,
-        :err => slave,
-        :chdir => config.dir,
-        :pgroup => true
-      )
-      slave.close
+      
+      Bundler.with_clean_env do
+
+        # give the child process a terminal so output isn't buffered
+        @master, slave = PTY.open
+        @pid = ::Process.spawn(
+          config.env,
+          %Q(bash -c "#{config.command}"),
+          :in => slave,
+          :out => slave,
+          :err => slave,
+          :chdir => config.dir,
+          :pgroup => true
+        )
+        slave.close
+
+
+      end
+
       proxy_output @master
       debug "started with pid #{@pid}"
 
