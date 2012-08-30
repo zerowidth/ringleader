@@ -107,7 +107,7 @@ module Ringleader
 
     def reset_activity_timer
       start_activity_timer
-      @activity_timer.reset
+      @activity_timer.reset if @activity_timer
     end
 
     def stop_activity_timer
