@@ -8,6 +8,8 @@ module Ringleader
 
     attr_reader :config
 
+    RBENV_CLEAN_ENV_VARS = %w(RBENV_VERSION RBENV_DIR GEM_HOME)
+
     # Create a new App instance.
     #
     # config - a configuration object for this app
@@ -105,15 +107,17 @@ module Ringleader
       # give the child process a terminal so output isn't buffered
       @master, slave = PTY.open
       in_clean_environment do
-        @pid = ::Process.spawn(
-          config.env,
-          %Q(bash -c "#{config.command}"),
-          :in => slave,
-          :out => slave,
-          :err => slave,
-          :chdir => config.dir,
-          :pgroup => true
-        )
+        in_clean_rbenv_environment do
+          @pid = ::Process.spawn(
+            config.env,
+            %Q(bash -c "#{config.command}"),
+            :in => slave,
+            :out => slave,
+            :err => slave,
+            :chdir => config.dir,
+            :pgroup => true
+          )
+        end
       end
       slave.close
       proxy_output @master
@@ -161,6 +165,19 @@ module Ringleader
           info input.gets.strip
         end
       end
+    end
+
+    # Private: execute rbenv in a clean environment (rbenv only)
+    # preserve the old ENV vars before deleting them and reinsert
+    # them after the block
+    def in_clean_rbenv_environment(&block)
+      original_env_vars = {}
+      if config.command =~ /^rbenv.*/ # only run if command starts with rbenv
+        original_env_vars = ENV.to_hash.inject({}) { |h,(k,v)| h[k]=v if RBENV_CLEAN_ENV_VARS.include?(k); h }
+        RBENV_CLEAN_ENV_VARS.each { |var| ENV.delete(var)}
+      end
+      yield
+      original_env_vars.each { |k,v| ENV[k] = v }
     end
 
     # Private: execute a command in a clean environment (bundler)
