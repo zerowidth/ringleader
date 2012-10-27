@@ -101,6 +101,8 @@ something like this:
       env:                     # Override or set environment variables inherited
         FOO: hello             # from the current environment. Use nil to unset a
         BAR: nil               # var.
+      kill_with: TERM          # Signal to use to kill the process tree with. Use
+                               # KILL if the default (TERM) is leaving zombies.
 
       # If you have an application managed by rvm, this setting automatically
       # adds the rvm-specific shell setup before executing the given command.

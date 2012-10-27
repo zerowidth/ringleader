@@ -48,13 +48,17 @@ module Ringleader
     #
     # Sends a SIGTERM to the app's process, and expects it to exit like a sane
     # and well-behaved application within 30 seconds before sending a SIGKILL.
+    #
+    # Uses config.kill_with for the initial signal, which defaults to "TERM".
+    # If a configured process doesn't respond well to TERM (i.e. leaving
+    # zombies), use KILL instead.
     def stop
       return unless @pid
 
       info "stopping #{@pid}"
       @master.close unless @master.closed?
-      debug "kill -TERM #{@pid}"
-      ::Process.kill "TERM", -@pid
+      debug "kill -#{config.kill_with} #{@pid}"
+      ::Process.kill config.kill_with, -@pid
 
       kill = after 30 do
         if @running

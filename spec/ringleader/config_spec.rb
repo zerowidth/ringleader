@@ -35,6 +35,10 @@ describe Ringleader::Config do
         expect(subject.apps["main_site"].env).to eq({})
         expect(subject.apps["admin"].env).to have_key("OVERRIDE")
       end
+
+      it "sets 'TERM' as the default kill signal" do
+        expect(subject.apps["main_site"].kill_with).to eq("TERM")
+      end
     end
   end
 

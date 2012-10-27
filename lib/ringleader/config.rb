@@ -37,6 +37,7 @@ module Ringleader
         options["host"] ||= DEFAULT_HOST
         options["idle_timeout"] ||= DEFAULT_IDLE_TIMEOUT
         options["startup_timeout"] ||= DEFAULT_STARTUP_TIMEOUT
+        options["kill_with"] ||= "TERM"
         options["env"] ||= {}
 
         if command = options.delete("rvm")
