@@ -77,8 +77,11 @@ describe Ringleader::Config do
     it "replaces the 'rbenv' command with an rbenv command and environment" do
       config = Ringleader::Config.new "spec/fixtures/rbenv.yml"
       expect(config.apps["rbenv_app"].command).to eq("rbenv exec bundle exec foreman start")
-      expect(config.apps["rbenv_app"].env).to have_key("RBENV_VERSION")
-      expect(config.apps["rbenv_app"].env["RBENV_VERSION"]).to eq(nil)
+
+      %w(RBENV_VERSION RBENV_DIR GEM_HOME).each do |key|
+        expect(config.apps["rbenv_app"].env).to have_key(key)
+        expect(config.apps["rbenv_app"].env[key]).to eq(nil)
+      end
     end
   end
 

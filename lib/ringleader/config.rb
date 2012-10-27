@@ -45,6 +45,8 @@ module Ringleader
         elsif command = options.delete("rbenv")
           options["command"] = "rbenv exec #{command}"
           options["env"]["RBENV_VERSION"] = nil
+          options["env"]["RBENV_DIR"] = nil
+          options["env"]["GEM_HOME"] = nil
         end
 
         validate name, options
