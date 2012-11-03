@@ -47,7 +47,7 @@ module Ringleader
     # Public: stop the application.
     #
     # Sends a SIGTERM to the app's process, and expects it to exit like a sane
-    # and well-behaved application within 30 seconds before sending a SIGKILL.
+    # and well-behaved application within 7 seconds before sending a SIGKILL.
     #
     # Uses config.kill_with for the initial signal, which defaults to "TERM".
     # If a configured process doesn't respond well to TERM (i.e. leaving
@@ -60,7 +60,7 @@ module Ringleader
       debug "kill -#{config.kill_with} #{@pid}"
       ::Process.kill config.kill_with, -@pid
 
-      kill = after 30 do
+      kill = after 7 do
         if @running
           warn "process #{@pid} did not shut down cleanly, killing it"
           debug "kill -KILL #{@pid}"
