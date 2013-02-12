@@ -63,7 +63,7 @@ Yep. Hook it up with [fluid](http://fluidapp.com) and put it in the menu bar. By
 default it runs at [http://localhost:42000](http://localhost:42000).
 
 
-![screenshot of ringleader control panel](/aniero/ringleader/raw/master/screenshot.png)
+![screenshot of ringleader control panel](screenshot.png)
 
 ## Installation
 
