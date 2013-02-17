@@ -69,7 +69,7 @@ describe Ringleader::Config do
   context "with a config with an 'rvm' key instead of a 'command'" do
     it "replaces the rvm command with a command to use rvm" do
       config = Ringleader::Config.new "spec/fixtures/rvm.yml"
-      expect(config.apps["rvm_app"].command).to match(/rvm.*rvmrc.*exec.*foreman/)
+      expect(config.apps["rvm_app"].command).to match(%r(rvm in \S+/apps/main do foreman start))
     end
   end
 

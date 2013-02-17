@@ -40,8 +40,10 @@ module Ringleader
         options["kill_with"] ||= "TERM"
         options["env"] ||= {}
 
+        options["dir"] = File.expand_path options["dir"]
+
         if command = options.delete("rvm")
-          options["command"] = "source ~/.rvm/scripts/rvm && rvm --with-rubies rvmrc exec -- #{command}"
+          options["command"] = "source ~/.rvm/scripts/rvm && rvm in #{options["dir"]} do #{command}"
         elsif command = options.delete("rbenv")
           options["command"] = "rbenv exec #{command}"
           options["env"]["RBENV_VERSION"] = nil
@@ -50,8 +52,6 @@ module Ringleader
         end
 
         validate name, options
-
-        options["dir"] = File.expand_path options["dir"]
 
         [name, OpenStruct.new(options)]
       end
