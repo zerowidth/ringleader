@@ -41,6 +41,9 @@ module Ringleader
         options["env"] ||= {}
 
         options["dir"] = File.expand_path options["dir"]
+        unless File.directory?(options["dir"])
+          raise ArgumentError, "#{options["dir"]} does not exist!"
+        end
 
         if command = options.delete("rvm")
           options["command"] = "source ~/.rvm/scripts/rvm && rvm in #{options["dir"]} do #{command}"
@@ -61,7 +64,7 @@ module Ringleader
     def validate(name, options)
       REQUIRED_KEYS.each do |key|
         unless options.has_key?(key)
-          raise "#{key} missing in #{name} config" 
+          raise ArgumentError, "#{key} missing in #{name} config"
         end
       end
     end

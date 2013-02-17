@@ -1,0 +1,9 @@
+---
+main_site:
+  dir: "~/does_not_exist"
+  command: "bundle exec foreman start"
+  host: "0.0.0.0"
+  server_port: 3000
+  app_port: 4000
+  idle_timeout: 1800
+

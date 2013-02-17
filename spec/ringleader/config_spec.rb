@@ -2,6 +2,16 @@ require "spec_helper"
 
 describe Ringleader::Config do
 
+  before :each do
+    File.stub(:directory?) do |arg|
+      if arg =~ %r(/apps/(main|admin|auth))
+        true
+      else
+        false
+      end
+    end
+  end
+
   context "when initialized with a config file" do
     subject { Ringleader::Config.new "spec/fixtures/config.yml" }
 
@@ -63,6 +73,14 @@ describe Ringleader::Config do
       expect {
         Ringleader::Config.new("spec/fixtures/no_server_port.yml").apps
       }.to raise_error(/server_port/)
+    end
+  end
+
+  context "when the target directory doesn't exist" do
+    it "raises an exception" do
+      expect {
+        Ringleader::Config.new("spec/fixtures/invalid_app_dir.yml").apps
+      }.to raise_error(/does not exist/)
     end
   end
 
