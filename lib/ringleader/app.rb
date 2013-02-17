@@ -12,6 +12,7 @@ module Ringleader
       @config = config
       @process = Process.new(config)
       enable! unless config.disabled
+      start if config.run_on_load
     end
 
     def name

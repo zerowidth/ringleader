@@ -97,6 +97,8 @@ main_app:
     BAR: nil               # var.
   kill_with: TERM          # Signal to use to kill the process tree with. Use
                            # KILL if the default (TERM) is leaving zombies.
+  run_on_load: false       # Set this to true to start an app when ringleader
+                           # loads.
 
   # If you have an application managed by rvm, this setting automatically adds
   # the rvm-specific shell setup before executing the given command. This
