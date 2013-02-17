@@ -67,7 +67,7 @@ APPLICATIONS
 
 Ringleader supports any application that runs in the foreground (not
 daemonized), and listens on a port. It expects applications to be well-behaved,
-that is, respond appropriately to SIGHUP for graceful shutdown.
+that is, respond appropriately to SIGINT for graceful shutdown.
 
 When first starting an app, ringleader will wait for the application's port to
 open, at which point it will proxy the incoming connection through.
@@ -95,14 +95,14 @@ something like this:
 
       # Optional settings
       host: 127.0.0.1          # The host ringleader should listen on
-      idle_timeout: 6000       # Idle timeout in seconds
+      idle_timeout: 6000       # Idle timeout in seconds, 0 for infinite
       startup_timeout: 180     # Application startup timeout
       disabled: true           # Set the app to be disabled when ringleader starts
       env:                     # Override or set environment variables inherited
         FOO: hello             # from the current environment. Use nil to unset a
         BAR: nil               # var.
-      kill_with: TERM          # Signal to use to kill the process tree with. Use
-                               # KILL if the default (TERM) is leaving zombies.
+      kill_with: INT           # Signal to use to kill the process tree with. Use
+                               # TERM or KILL if the default is leaving zombies.
       run_on_load: false       # Set this to true to start an app when ringleader
                                # loads.
 
