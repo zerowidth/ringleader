@@ -1,0 +1,51 @@
+---
+one:
+  dir: "./dev_scripts"
+  command: "ncat -k -l 10001"
+  server_port: 10001
+  app_port: 20001
+two:
+  dir: "./dev_scripts"
+  command: "ncat -k -l 10002"
+  server_port: 10002
+  app_port: 20002
+three:
+  dir: "./dev_scripts"
+  command: "ncat -k -l 10003"
+  server_port: 10003
+  app_port: 20003
+four:
+  dir: "./dev_scripts"
+  command: "ncat -k -l 10004"
+  server_port: 10004
+  app_port: 20004
+five:
+  dir: "./dev_scripts"
+  command: "ncat -k -l 10005"
+  server_port: 10005
+  app_port: 20005
+six:
+  dir: "./dev_scripts"
+  command: "ncat -k -l 10006"
+  server_port: 10006
+  app_port: 20006
+seven:
+  dir: "./dev_scripts"
+  command: "ncat -k -l 10007"
+  server_port: 10007
+  app_port: 20007
+eight:
+  dir: "./dev_scripts"
+  command: "ncat -k -l 10008"
+  server_port: 10008
+  app_port: 20008
+nine:
+  dir: "./dev_scripts"
+  command: "ncat -k -l 10009"
+  server_port: 10009
+  app_port: 20009
+ten:
+  dir: "./dev_scripts"
+  command: "ncat -k -l 10010"
+  server_port: 10010
+  app_port: 20010
