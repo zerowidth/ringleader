@@ -43,7 +43,7 @@ module Ringleader
 
         options["dir"] = File.expand_path options["dir"]
         unless File.directory?(options["dir"]) || options["disabled"]
-          error "#{options["dir"]} does not exist!"
+          warn "#{options["dir"]} does not exist!"
         end
 
         if command = options.delete("rvm")
