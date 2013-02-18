@@ -1,5 +1,6 @@
 module Ringleader
   class Config
+    include Celluloid::Logger
 
     DEFAULT_IDLE_TIMEOUT = 1800
     DEFAULT_STARTUP_TIMEOUT = 30
@@ -41,8 +42,8 @@ module Ringleader
         options["env"] ||= {}
 
         options["dir"] = File.expand_path options["dir"]
-        unless File.directory?(options["dir"])
-          raise ArgumentError, "#{options["dir"]} does not exist!"
+        unless File.directory?(options["dir"]) || options["disabled"]
+          error "#{options["dir"]} does not exist!"
         end
 
         if command = options.delete("rvm")
