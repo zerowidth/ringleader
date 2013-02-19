@@ -76,14 +76,6 @@ describe Ringleader::Config do
     end
   end
 
-  context "when the target directory doesn't exist" do
-    it "raises an exception" do
-      expect {
-        Ringleader::Config.new("spec/fixtures/invalid_app_dir.yml").apps
-      }.to raise_error(/does not exist/)
-    end
-  end
-
   context "with a config with an 'rvm' key instead of a 'command'" do
     it "replaces the rvm command with a command to use rvm" do
       config = Ringleader::Config.new "spec/fixtures/rvm.yml"
