@@ -2,13 +2,15 @@ module Ringleader
   class CLI
     include Celluloid::Logger
 
+    RC_FILE = File.expand_path('~/.ringleaderrc')
+
     def run(argv)
       # hide "shutdown" info message until after opts are validated
       Celluloid.logger.level = ::Logger::ERROR
 
       opts = nil
       Trollop.with_standard_exception_handling parser do
-        opts = parser.parse argv
+        opts = merge_rc_opts(parser.parse(argv))
       end
 
       die "must provide a filename" if argv.empty?
@@ -127,6 +129,18 @@ OPTIONS
           :short => "-b", :default => false
 
       end
+    end
+
+    def merge_rc_opts(opts)
+      opts[:verbose] = rc_opts[:verbose] unless opts[:verbose_given]
+      opts[:host]    = rc_opts[:host]    unless opts[:host_given]
+      opts[:port]    = rc_opts[:port]    unless opts[:port_given]
+      opts[:boring]  = rc_opts[:boring]  unless opts[:boring_given]
+      opts
+    end
+
+    def rc_opts
+      @rc_opts ||= parser.parse(File.exist?(RC_FILE) ? File.read(RC_FILE).strip.split(/\s+/) : [])
     end
 
   end
