@@ -117,18 +117,14 @@ something like this:
 OPTIONS
         banner
 
-        opt "verbose", "log at debug level",
-          :long => "--verbose", :short => "-v",
-          :type => :boolean, :default => false
-        opt "host", "host for web control panel",
-          :long => "--host", :short => "-H",
-          :default => "localhost"
-        opt "port", "port for the web control panel",
-          :long => "--port", :short => "-p",
-          :type => :integer, :default => 42000
-        opt "boring", "use boring colors instead of a fabulous rainbow",
-          :long => "--boring", :short => "-b",
-          :type => :boolean, :default => false
+        opt :verbose, "log at debug level",
+          :short => "-v", :default => false
+        opt :host, "host for web control panel",
+          :short => "-H", :default => "localhost"
+        opt :port, "port for the web control panel",
+          :short => "-p", :default => 42000
+        opt :boring, "use boring colors instead of a fabulous rainbow",
+          :short => "-b", :default => false
 
       end
     end
