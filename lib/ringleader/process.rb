@@ -56,24 +56,26 @@ module Ringleader
     def stop
       return unless @pid
 
+      children = child_pids @pid
+
       info "stopping #{@pid}"
+      debug "child pids: #{children.inspect}"
+
       @master.close unless @master.closed?
+
       debug "kill -#{config.kill_with} #{@pid}"
-      all_pids = pids(@pid)
       ::Process.kill config.kill_with, -@pid
 
-      kill = after 7 do
-        all_pids.each do |pid|
-          if ProcTable.ps(pid)
-            warn "process #{pid} did not shut down cleanly, killing it"
-            debug "kill -KILL #{pid}"
-            ::Process.kill "KILL", -pid
-          end
-        end
+      failsafe = after 7 do
+        warn "process #{@pid} did not shut down cleanly, killing it"
+        debug "kill -KILL #{@pid}"
+        ::Process.kill "KILL", -@pid
+        reap_orphans children
       end
 
       wait :running # wait for the exit callback
-      kill.cancel
+      failsafe.cancel
+      reap_orphans children
 
     rescue Errno::ESRCH, Errno::EPERM
       exited
@@ -87,8 +89,7 @@ module Ringleader
 
     # Internal: callback for when the process has exited.
     def exited
-      debug "pid #{@pid} has exited"
-      info "exited."
+      info "pid #{@pid} exited"
       @running = false
       @pid = nil
       @wait_for_port.terminate if @wait_for_port.alive?
@@ -176,14 +177,34 @@ module Ringleader
       end
     end
 
-    # Internal: returns all pids in hierarchy
-    def pids(master_pid)
-      pids = [master_pid]
-      proc_table = ProcTable.ps
-      proc_table.select {|pr| pr.ppid == master_pid }.each do |pr| 
-        pids += pids(pr.pid)
+    # Internal: kill orphaned processes
+    def reap_orphans(child_pids)
+      child_pids.each do |pid|
+        error "child process #{pid} was orphaned, killing it"
+        begin
+          ::Process.kill "KILL", pid
+        rescue Errno::ESRCH, Errno::EPERM
+          debug "could not kill #{pid}"
+        end
       end
-      pids
+    end
+
+    # Internal: returns all child pids of the given parent
+    def child_pids(parent_pid)
+      proc_table = ProcTable.ps
+      children_of parent_pid, proc_table
+    end
+
+    # Internal: find child pids given a parent pid and a proc table
+    def children_of(parent_pid, proc_table)
+      [].tap do |pids|
+        proc_table.each do |proc_record|
+          if proc_record.ppid == parent_pid
+            pids << proc_record.pid
+            pids.concat children_of proc_record.pid, proc_table
+          end
+        end
+      end
     end
 
   end
