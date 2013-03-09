@@ -5,6 +5,7 @@ module Ringleader
     include Celluloid
     include Celluloid::Logger
     include NameLogger
+    include Sys
 
     attr_reader :config
 
@@ -58,13 +59,16 @@ module Ringleader
       info "stopping #{@pid}"
       @master.close unless @master.closed?
       debug "kill -#{config.kill_with} #{@pid}"
+      all_pids = pids(@pid)
       ::Process.kill config.kill_with, -@pid
 
       kill = after 7 do
-        if @running
-          warn "process #{@pid} did not shut down cleanly, killing it"
-          debug "kill -KILL #{@pid}"
-          ::Process.kill "KILL", -@pid
+        all_pids.each do |pid|
+          if ProcTable.ps(pid)
+            warn "process #{pid} did not shut down cleanly, killing it"
+            debug "kill -KILL #{pid}"
+            ::Process.kill "KILL", -pid
+          end
         end
       end
 
@@ -170,6 +174,16 @@ module Ringleader
       else
         yield
       end
+    end
+    
+    # Private: returns all pids in hierarchy
+    def pids(master_pid)
+      pids = [master_pid]
+      proc_table = ProcTable.ps
+      proc_table.select {|pr| pr.ppid == master_pid }.each do |pr| 
+        pids += pids(pr.pid)
+      end
+      pids
     end
 
   end

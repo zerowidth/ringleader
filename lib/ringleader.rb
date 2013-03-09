@@ -11,6 +11,7 @@ require "trollop"
 require "rainbow"
 require "color"
 require "pathname"
+require 'sys/proctable'
 
 module Ringleader
 end
