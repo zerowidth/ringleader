@@ -2,13 +2,15 @@ module Ringleader
   class CLI
     include Celluloid::Logger
 
+    RC_FILE = File.expand_path('~/.ringleaderrc')
+
     def run(argv)
       # hide "shutdown" info message until after opts are validated
       Celluloid.logger.level = ::Logger::ERROR
 
       opts = nil
       Trollop.with_standard_exception_handling parser do
-        opts = parser.parse argv
+        opts = merge_rc_opts(parser.parse(argv))
       end
 
       die "must provide a filename" if argv.empty?
@@ -117,20 +119,28 @@ something like this:
 OPTIONS
         banner
 
-        opt "verbose", "log at debug level",
-          :long => "--verbose", :short => "-v",
-          :type => :boolean, :default => false
-        opt "host", "host for web control panel",
-          :long => "--host", :short => "-H",
-          :default => "localhost"
-        opt "port", "port for the web control panel",
-          :long => "--port", :short => "-p",
-          :type => :integer, :default => 42000
-        opt "boring", "use boring colors instead of a fabulous rainbow",
-          :long => "--boring", :short => "-b",
-          :type => :boolean, :default => false
+        opt :verbose, "log at debug level",
+          :short => "-v", :default => false
+        opt :host, "host for web control panel",
+          :short => "-H", :default => "localhost"
+        opt :port, "port for the web control panel",
+          :short => "-p", :default => 42000
+        opt :boring, "use boring colors instead of a fabulous rainbow",
+          :short => "-b", :default => false
 
       end
+    end
+
+    def merge_rc_opts(opts)
+      opts[:verbose] = rc_opts[:verbose] unless opts[:verbose_given]
+      opts[:host]    = rc_opts[:host]    unless opts[:host_given]
+      opts[:port]    = rc_opts[:port]    unless opts[:port_given]
+      opts[:boring]  = rc_opts[:boring]  unless opts[:boring_given]
+      opts
+    end
+
+    def rc_opts
+      @rc_opts ||= parser.parse(File.exist?(RC_FILE) ? File.read(RC_FILE).strip.split(/\s+/) : [])
     end
 
   end
