@@ -16,8 +16,8 @@ module Ringleader
       debug "proxying to #{host}:#{port}"
       @socket = TCPSocket.new(host, port)
 
-      proxy! @socket, @upstream
-      proxy! @upstream, @socket
+      async.proxy @socket, @upstream
+      async.proxy @upstream, @socket
 
     rescue Errno::ECONNREFUSED
       error "could not proxy to #{host}:#{port}"

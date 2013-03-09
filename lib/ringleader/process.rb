@@ -128,7 +128,7 @@ module Ringleader
 
       timer = after config.startup_timeout do
         warn "application startup took more than #{config.startup_timeout}"
-        stop!
+        async.stop
       end
 
       @running = wait :running

@@ -4,12 +4,12 @@ module Ringleader
 
     def initialize(pid, app)
       @pid, @app = pid, app
-      wait!
+      async.wait
     end
 
     def wait
       ::Process.waitpid @pid
-      @app.exited!
+      @app.async.exited
       terminate
     end
   end

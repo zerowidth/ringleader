@@ -11,7 +11,7 @@ module Ringleader
     def initialize(config)
       @config = config
       @process = Process.new(config)
-      enable! unless config.disabled
+      async.enable unless config.disabled
       start if config.run_on_load
     end
 
@@ -51,7 +51,7 @@ module Ringleader
       return if @server
       @server = TCPServer.new @config.host, @config.server_port
       @enabled = true
-      run!
+      async.run
     rescue Errno::EADDRINUSE
       error "could not bind to #{@config.host}:#{@config.server_port} for #{@config.name}!"
       @server = nil
@@ -73,7 +73,7 @@ module Ringleader
 
     def run
       info "listening for connections for #{@config.name} on #{@config.host}:#{@config.server_port}"
-      loop { handle_connection! @server.accept }
+      loop { async.handle_connection @server.accept }
     rescue IOError
       @server.close if @server
     end
@@ -84,7 +84,7 @@ module Ringleader
 
       started = @process.start
       if started
-        proxy_to_app! socket
+        async.proxy_to_app socket
         reset_activity_timer
       else
         error "could not start app"
