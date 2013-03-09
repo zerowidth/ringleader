@@ -21,7 +21,7 @@ module Ringleader
       @apps = Hash[*configs.flatten]
     end
 
-    # Private: convert a YML hash to an array of name/OpenStruct pairs
+    # Internal: convert a YML hash to an array of name/OpenStruct pairs
     #
     # Does validation for each app config and raises an error if anything is
     # wrong. Sets default values for missing options, and assigns colors to each
@@ -61,7 +61,7 @@ module Ringleader
       end
     end
 
-    # Private: validate that the options have all of the required keys
+    # Internal: validate that the options have all of the required keys
     def validate(name, options)
       REQUIRED_KEYS.each do |key|
         unless options.has_key?(key)
@@ -70,7 +70,7 @@ module Ringleader
       end
     end
 
-    # Private: assign a color to each application configuration.
+    # Internal: assign a color to each application configuration.
     #
     # configs - the config data to modify
     # boring  - use boring standard terminal colors instead of a rainbow.

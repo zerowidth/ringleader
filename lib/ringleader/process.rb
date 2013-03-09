@@ -96,7 +96,7 @@ module Ringleader
       signal :running, false
     end
 
-    # Private: start the application process and associated infrastructure
+    # Internal: start the application process and associated infrastructure
     #
     # Intended to be synchronous, as it blocks until the app has started (or
     # failed to start).
@@ -147,7 +147,7 @@ module Ringleader
       end
     end
 
-    # Private: check if the app is already running outside ringleader
+    # Internal: check if the app is already running outside ringleader
     def already_running?
       socket = TCPSocket.new config.host, config.app_port
       socket.close
@@ -156,7 +156,7 @@ module Ringleader
       false
     end
 
-    # Private: proxy output streams to the logger.
+    # Internal: proxy output streams to the logger.
     #
     # Fire and forget, runs in its own thread.
     def proxy_output(input)
@@ -167,7 +167,7 @@ module Ringleader
       end
     end
 
-    # Private: execute a command in a clean environment (bundler)
+    # Internal: execute a command in a clean environment (bundler)
     def in_clean_environment(&block)
       if Object.const_defined?(:Bundler)
         ::Bundler.with_clean_env(&block)
@@ -175,8 +175,8 @@ module Ringleader
         yield
       end
     end
-    
-    # Private: returns all pids in hierarchy
+
+    # Internal: returns all pids in hierarchy
     def pids(master_pid)
       pids = [master_pid]
       proc_table = ProcTable.ps
