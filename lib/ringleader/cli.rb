@@ -5,8 +5,7 @@ module Ringleader
     RC_FILE = File.expand_path('~/.ringleaderrc')
 
     def run(argv)
-      # hide "shutdown" info message until after opts are validated
-      Celluloid.logger.level = ::Logger::ERROR
+      configure_logging
 
       opts = nil
       Trollop.with_standard_exception_handling parser do
@@ -16,7 +15,9 @@ module Ringleader
       die "must provide a filename" if argv.empty?
       die "could not find config file #{argv.first}" unless File.exist?(argv.first)
 
-      configure_logging(opts.verbose ? "debug" : "info")
+      if opts.verbose?
+        Celluloid.logger.level = ::Logger::DEBUG
+      end
 
       apps = Config.new(argv.first, opts.boring).apps
 
@@ -32,8 +33,10 @@ module Ringleader
       sleep
     end
 
-    def configure_logging(level)
-      Celluloid.logger.level = ::Logger.const_get(level.upcase)
+    def configure_logging
+      # set to INFO at first to hide celluloid's shutdown message until after
+      # opts are validated.
+      Celluloid.logger.level = ::Logger::INFO
       format = "%5s %s.%06d | %s\n"
       date_format = "%H:%M:%S"
       Celluloid.logger.formatter = lambda do |severity, time, progname, msg|
@@ -132,15 +135,24 @@ OPTIONS
     end
 
     def merge_rc_opts(opts)
-      opts[:verbose] = rc_opts[:verbose] unless opts[:verbose_given]
-      opts[:host]    = rc_opts[:host]    unless opts[:host_given]
-      opts[:port]    = rc_opts[:port]    unless opts[:port_given]
-      opts[:boring]  = rc_opts[:boring]  unless opts[:boring_given]
+      [:verbose, :host, :port, :boring].each do |option_name|
+        if rc_opts.has_key?(option_name) && !opts["#{option_name}_given".to_sym]
+          opts[option_name] = rc_opts[option_name]
+        end
+      end
       opts
     end
 
     def rc_opts
-      @rc_opts ||= parser.parse(File.exist?(RC_FILE) ? File.read(RC_FILE).strip.split(/\s+/) : [])
+      unless @rc_opts
+        if File.readable?(RC_FILE)
+          info "reading options from ~/.ringleaderrc"
+          @rc_opts = parser.parse File.read(RC_FILE).strip.split(/\s+/)
+        else
+          @rc_opts = {}
+        end
+      end
+      @rc_opts
     end
 
   end
