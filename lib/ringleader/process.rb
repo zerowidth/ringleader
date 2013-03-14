@@ -5,7 +5,6 @@ module Ringleader
     include Celluloid
     include Celluloid::Logger
     include NameLogger
-    include Sys
 
     attr_reader :config
 
@@ -75,6 +74,7 @@ module Ringleader
 
       wait :running # wait for the exit callback
       failsafe.cancel
+      sleep 2 # give the children a chance to shut down
       reap_orphans children
 
     rescue Errno::ESRCH, Errno::EPERM
@@ -180,6 +180,7 @@ module Ringleader
     # Internal: kill orphaned processes
     def reap_orphans(child_pids)
       child_pids.each do |pid|
+        next unless Sys::ProcTable.ps(pid)
         error "child process #{pid} was orphaned, killing it"
         begin
           ::Process.kill "KILL", pid
@@ -191,7 +192,7 @@ module Ringleader
 
     # Internal: returns all child pids of the given parent
     def child_pids(parent_pid)
-      proc_table = ProcTable.ps
+      proc_table = Sys::ProcTable.ps
       children_of parent_pid, proc_table
     end
 
