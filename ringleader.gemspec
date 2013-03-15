@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "trollop", "~> 1.16.2"
   gem.add_dependency "rainbow", "~> 1.1.4"
   gem.add_dependency "color", "~> 1.4.1"
-  gem.add_dependency "sys-proctable", "~> 0.9.2"
+  gem.add_dependency "sys-proctable", "<= 0.9.1"
 
   gem.add_development_dependency "rake"
   gem.add_development_dependency "rspec", "~> 2.11.0"
