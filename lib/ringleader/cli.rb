@@ -15,7 +15,7 @@ module Ringleader
       die "must provide a filename" if argv.empty?
       die "could not find config file #{argv.first}" unless File.exist?(argv.first)
 
-      if opts.verbose?
+      if opts.verbose
         Celluloid.logger.level = ::Logger::DEBUG
       end
 
