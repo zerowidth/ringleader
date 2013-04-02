@@ -178,8 +178,9 @@ module Ringleader
     end
 
     # Internal: kill orphaned processes
-    def reap_orphans(child_pids)
-      child_pids.each do |pid|
+    def reap_orphans(pids)
+      pids.each do |pid|
+        debug "checking for child #{pid}"
         next unless Sys::ProcTable.ps(pid)
         error "child process #{pid} was orphaned, killing it"
         begin
@@ -192,6 +193,7 @@ module Ringleader
 
     # Internal: returns all child pids of the given parent
     def child_pids(parent_pid)
+      debug "retrieving child pids of #{parent_pid}"
       proc_table = Sys::ProcTable.ps
       children_of parent_pid, proc_table
     end
