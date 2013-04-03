@@ -35,9 +35,16 @@ module Ringleader
       end
     end
 
-    def stop
+    def stop(forever=false)
       return unless @process.running?
       info "stopping #{@config.name}..."
+
+      if forever
+        # stop processing requests
+        @server.close
+        @server = nil
+      end
+
       stop_activity_timer
       @process.stop
     end
@@ -61,9 +68,9 @@ module Ringleader
       info "disabling #{@config.name}..."
       return unless @server
       stop_activity_timer
-      @process.stop
       @server.close
       @server = nil
+      @process.stop
       @enabled = false
     end
 

@@ -23,7 +23,7 @@ module Ringleader
       @stopping = true
       info "shutting down..."
       @apps.values.map do |app|
-        Thread.new { app.stop if app.alive? }
+        Thread.new { app.stop(:forever) if app.alive? }
       end.map(&:join)
     end
   end
