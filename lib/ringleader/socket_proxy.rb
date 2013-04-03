@@ -27,8 +27,11 @@ module Ringleader
 
     def proxy(from, to)
       ::IO.copy_stream from, to
-    rescue IOError
+    rescue EOFError
       # from or to were closed
+    rescue IOError, SystemCallError => e
+      # something else went wrong, like a connection reset or timeout: log it
+      error e
     ensure
       from.close unless from.closed?
       to.close unless to.closed?
