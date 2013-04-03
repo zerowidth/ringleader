@@ -1,6 +1,5 @@
 module Ringleader
   class Server < Reel::Server
-    include Celluloid::IO # hurk
     include Celluloid::Logger
 
     ASSET_PATH = Pathname.new(File.expand_path("../../../assets", __FILE__))
@@ -15,11 +14,11 @@ module Ringleader
 
     def on_connection(connection)
       request = connection.request
-      route connection, request if request
+      route request if request
     end
 
     # thanks to dcell explorer for this code
-    def route(connection, request)
+    def route(request)
       if request.url == "/"
         path = "index.html"
       else
@@ -27,66 +26,68 @@ module Ringleader
       end
 
       if !path or path[".."]
-        connection.respond :not_found, "Not found"
+        request.respond :not_found, "Not found"
         debug "404 #{path}"
         return
       end
 
       case request.method
-      when :get
+      when "GET"
         if path == "apps"
-          app_index connection
+          app_index request
         elsif path =~ %r(^apps/\w+)
-          show_app path, request.body, connection
+          show_app path, request
         else
-          static_file path, connection
+          static_file path, request
         end
-      when :post
-        update_app path, request.body, connection
+      when "POST"
+        update_app path, request
+      else
+        error "unknown #{request.method} request to #{request.url}"
       end
     end
 
-    def app_index(connection)
+    def app_index(request)
       json = @controller.apps.map { |app| app_as_json(app) }.to_json
-      connection.respond :ok, json
+      request.respond :ok, json
       debug "GET /apps: 200"
     end
 
-    def static_file(path, connection)
+    def static_file(path, request)
       filename = ASSET_PATH + path
       if filename.exist?
         mime_type = content_type_for filename.extname
         filename.open("r") do |file|
-          connection.respond :ok, {"Content-type" => mime_type}, file
+          request.respond :ok, {"Content-type" => mime_type}, file
         end
         debug "GET #{path}: 200"
       else
-        connection.respond :not_found, "Not found"
+        request.respond :not_found, "Not found"
         debug "GET #{path}: 404"
       end
     end
 
-    def show_app(uri, body, connection)
+    def show_app(uri, request)
       _, name, _ = uri.split("/")
       app = @controller.app name
       if app
-        connection.respond :ok, app_as_json(app).to_json
+        request.respond :ok, app_as_json(app).to_json
         debug "GET #{uri}: 200"
       else
-        connection.respond :not_found, "Not found"
+        request.respond :not_found, "Not found"
         debug "GET #{uri}: 404"
       end
     end
 
-    def update_app(uri, body, connection)
+    def update_app(uri, request)
       _, name, action = uri.split("/")
       app = @controller.app name
       if app && ACTIONS.include?(action)
         app.send action
-        connection.respond :ok, app_as_json(app).to_json
+        request.respond :ok, app_as_json(app).to_json
         debug "POST #{uri}: 200"
       else
-        connection.respond :not_found, "Not found"
+        request.respond :not_found, "Not found"
         debug "POST #{uri}: 404"
       end
     end

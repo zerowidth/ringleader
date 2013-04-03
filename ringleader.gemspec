@@ -16,9 +16,9 @@ Gem::Specification.new do |gem|
   gem.version       = Ringleader::VERSION
   gem.required_ruby_version = "> 1.9.3"
 
-  gem.add_dependency "celluloid", "~> 0.12.4"
-  gem.add_dependency "celluloid-io", "~> 0.12.0"
-  gem.add_dependency "reel", "~> 0.1.0"
+  gem.add_dependency "celluloid", "~> 0.13.0"
+  gem.add_dependency "celluloid-io", "~> 0.13.0"
+  gem.add_dependency "reel", "~> 0.3.0"
   gem.add_dependency "trollop", "~> 1.16.2"
   gem.add_dependency "rainbow", "~> 1.1.4"
   gem.add_dependency "color", "~> 1.4.1"
