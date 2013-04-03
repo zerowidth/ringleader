@@ -30,7 +30,6 @@ module Ringleader
     #
     # Returns true if the app started, false if not.
     def start
-      return false if @stopping
       if @running
         true
       elsif @starting
@@ -55,7 +54,6 @@ module Ringleader
     # zombies), use KILL instead.
     def stop
       return unless @pid
-      @stopping = true
 
       children = child_pids @pid
 
@@ -96,7 +94,6 @@ module Ringleader
       @pid = nil
       @wait_for_port.terminate if @wait_for_port.alive?
       @wait_for_exit.terminate if @wait_for_exit.alive?
-      @stopping = nil
       signal :running, false
     end
 
