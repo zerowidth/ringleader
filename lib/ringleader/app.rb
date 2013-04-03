@@ -99,8 +99,16 @@ module Ringleader
       end
     end
 
-    def proxy_to_app(socket)
-      SocketProxy.new socket, @config.host, @config.app_port
+    def proxy_to_app(upstream)
+      debug "proxying to #{@config.host}:#{@config.app_port}"
+
+      downstream = TCPSocket.new(@config.host, @config.app_port)
+      async.proxy downstream, upstream
+      async.proxy upstream, downstream
+
+    rescue Errno::ECONNREFUSED
+      error "could not proxy to #{host}:#{port}"
+      upstream.close
     end
 
     def start_activity_timer
@@ -123,6 +131,18 @@ module Ringleader
         @activity_timer.cancel
         @activity_timer = nil
       end
+    end
+
+    def proxy(from, to)
+      ::IO.copy_stream from, to
+    rescue IOError
+      # from or to were closed
+    rescue SystemCallError => e
+      # something else went wrong, like a connection reset or timeout: log it
+      error e.inspect
+    ensure
+      from.close unless from.closed?
+      to.close unless to.closed?
     end
 
   end
