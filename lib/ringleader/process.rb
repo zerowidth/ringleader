@@ -153,8 +153,10 @@ module Ringleader
       socket = TCPSocket.new config.host, config.app_port
       socket.close
       true
-    rescue Errno::ECONNREFUSED
+    rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT
       false
+    rescue IOError, SystemCallError => e
+      error "unexpected error when checking status: #{e}"
     end
 
     # Internal: proxy output streams to the logger.

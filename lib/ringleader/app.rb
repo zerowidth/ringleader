@@ -108,8 +108,8 @@ module Ringleader
       async.proxy downstream, upstream
       async.proxy upstream, downstream
 
-    rescue Errno::ECONNREFUSED
-      error "could not proxy to #{host}:#{port}"
+    rescue IOError, SystemCallError => e
+      error "could not proxy to #{@config.host}:#{@config.app_port}: #{e}"
       upstream.close
     end
 
@@ -137,11 +137,8 @@ module Ringleader
 
     def proxy(from, to)
       ::IO.copy_stream from, to
-    rescue IOError
-      # from or to were closed
-    rescue SystemCallError => e
-      # something else went wrong, like a connection reset or timeout: log it
-      error e.inspect
+    rescue IOError, SystemCallError
+      # from or to were closed or connection was reset
     ensure
       from.close unless from.closed?
       to.close unless to.closed?

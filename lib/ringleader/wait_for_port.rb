@@ -11,9 +11,13 @@ module Ringleader
     def wait
       begin
         TCPSocket.new @host, @port
-      rescue Errno::ECONNREFUSED
-        sleep 0.5
+      rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT
         debug "#{@host}:#{@port} not open yet"
+        sleep 0.5
+        retry
+      rescue IOError, SystemCallError => e
+        error "unexpected error while waiting for port: #{e}"
+        sleep 0.5
         retry
       end
       debug "#{@host}:#{@port} open"
