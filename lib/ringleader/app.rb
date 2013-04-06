@@ -74,9 +74,11 @@ module Ringleader
       @enabled = false
     end
 
-    def finalize
-      @server.close if @server
+    def close_server_socket
+      @server.close if @server && !@server.closed?
+      @server = nil
     end
+    finalizer :close_server_socket
 
     def run
       info "listening for connections for #{@config.name} on #{@config.host}:#{@config.server_port}"
