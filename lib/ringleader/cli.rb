@@ -9,10 +9,10 @@ module Ringleader
 
       opts = nil
       Trollop.with_standard_exception_handling parser do
+        raise Trollop::HelpNeeded if argv.empty?
         opts = merge_rc_opts(parser.parse(argv))
       end
 
-      die "must provide a filename" if argv.empty?
       die "could not find config file #{argv.first}" unless File.exist?(argv.first)
 
       if opts.verbose
