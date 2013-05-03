@@ -107,6 +107,13 @@ module Ringleader
       @starting = true
       info "starting process `#{config.command}`"
 
+      unless File.directory?(config.dir)
+        error "#{config.dir} does not exist!"
+        @starting = false
+        @running = false
+        return false
+      end
+
       # give the child process a terminal so output isn't buffered
       @master, slave = PTY.open
       in_clean_environment do
