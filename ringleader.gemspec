@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["nwitmer@gmail.com"]
   gem.description   = %q{TCP application host and proxy server}
   gem.summary       = %q{Proxy TCP connections to an on-demand pool of configured applications}
-  gem.homepage      = "https://github.com/aniero/ringleader"
+  gem.homepage      = "https://github.com/zerowidth/ringleader"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
