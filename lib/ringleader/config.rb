@@ -48,6 +48,8 @@ module Ringleader
 
         if command = options.delete("rvm")
           options["command"] = "source ~/.rvm/scripts/rvm && rvm in #{options["dir"]} do #{command}"
+        elsif command = options.delete("chruby")
+          options["command"] = "source /usr/local/share/chruby/chruby.sh ; source /usr/local/share/chruby/auto.sh ; cd #{options["dir"]} ; #{command}"
         elsif command = options.delete("rbenv")
           options["command"] = "rbenv exec #{command}"
           options["env"]["RBENV_VERSION"] = nil
