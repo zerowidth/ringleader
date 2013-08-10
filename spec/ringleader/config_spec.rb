@@ -83,6 +83,13 @@ describe Ringleader::Config do
     end
   end
 
+  context "with a config with an 'chruby' key instead of a 'command'" do
+    it "replaces the command with a command to use chruby" do
+      config = Ringleader::Config.new "spec/fixtures/chruby.yml"
+      expect(config.apps["chruby_app"].command).to eq("source /usr/local/share/chruby/chruby.sh ; source /usr/local/share/chruby/auto.sh ; cd /Users/tapajos/apps/main ; foreman start")
+    end
+  end
+
   context "with a config with a 'rbenv' key instead of 'command'" do
     it "replaces the 'rbenv' command with an rbenv command and environment" do
       config = Ringleader::Config.new "spec/fixtures/rbenv.yml"
