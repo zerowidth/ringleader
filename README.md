@@ -108,6 +108,9 @@ main_app:
   # Likewise for rbenv:
   rbenv: "foreman start"
 
+  # And chruby:
+  chruby: "foreman start"
+
 other_app:
   [...]
 ```
