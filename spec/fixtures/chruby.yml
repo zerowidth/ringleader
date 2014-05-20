@@ -1,6 +1,6 @@
 ---
 chruby_app:
-  dir: "~/apps/main"
+  dir: "/Users/demo/apps/main"
   chruby: "foreman start"
   server_port: 3000
   app_port: 4000
