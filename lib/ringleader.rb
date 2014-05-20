@@ -16,6 +16,7 @@ require 'sys/proctable'
 module Ringleader
 end
 
+require 'ringleader/celluloid_fix'
 require "ringleader/config"
 require "ringleader/name_logger"
 require "ringleader/wait_for_exit"
