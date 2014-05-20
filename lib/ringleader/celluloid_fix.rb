@@ -1,3 +1,7 @@
+# FIXME: see zerowidth/ringleader#36 and celluloid/celluloid-io#23. If the
+# celluloid issue is ever merged, this monkeypatch / wholesale rewrite needs to
+# go away.
+
 require 'nio'
 
 module Celluloid
