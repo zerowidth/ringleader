@@ -115,6 +115,14 @@ other_app:
   [...]
 ```
 
+## Known issues
+
+### Too many open files - pipe (Errno::EMFILE)
+
+You may get this error if you have a high number of projects in your ringleader file. It happens because Celluloid::IO is trying to opens more file descriptors that your OS allows. This number is different for each version of SO and you can check it running ```ulimit -a```.
+
+You can increase the maximum number of open file descriptors using the ```ulimit -n NUMBER```. Currently I'm using  ```ulimit -n 1024``` with a huge ringleader file.
+
 ## License
 
 MIT, see `LICENSE`.
