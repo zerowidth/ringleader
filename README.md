@@ -123,6 +123,8 @@ You may get this error if you have a high number of projects in your ringleader 
 
 You can increase the maximum number of open file descriptors using the ```ulimit -n NUMBER```. Currently I'm using  ```ulimit -n 1024``` with a huge ringleader file.
 
+If you are using OS X [check it](http://superuser.com/questions/827984/open-files-limit-does-not-work-as-before-in-osx-yosemite).
+
 ## License
 
 MIT, see `LICENSE`.
